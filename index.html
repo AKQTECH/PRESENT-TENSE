@@ -417,6 +417,147 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   line-height: 1.55;
 }
 
+/* Friends block */
+.friends-box {
+  display: none;
+  background: var(--celery);
+  margin: 14px 16px 6px;
+  border-radius: 16px;
+  padding: 16px 18px 18px;
+}
+.friends-box-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal-mid);
+  margin-bottom: 10px;
+}
+.friends-list { display: flex; flex-direction: column; gap: 10px; }
+.friend-item {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.friend-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  margin-bottom: 6px;
+}
+.friend-update {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  background: var(--teal-light);
+  text-decoration: none;
+}
+.friend-update-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal-mid);
+}
+.friend-update-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  line-height: 1.3;
+}
+.friends-empty {
+  font-size: 13px;
+  color: var(--text-mid);
+  font-style: italic;
+  text-align: center;
+  padding: 8px 4px;
+}
+
+/* Fandom block */
+.fandom-box {
+  display: none;
+  background: var(--teal-dark);
+  margin: 10px 16px 6px;
+  border-radius: 16px;
+  padding: 16px 18px 18px;
+  color: var(--celery);
+}
+.fandom-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.fandom-box-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal-mid);
+}
+.fandom-box.loading .fandom-box-label::after {
+  content: ' \u2022\u2022\u2022';
+}
+.fandom-status {
+  font-size: 12px;
+  color: var(--teal-mid);
+  margin-bottom: 4px;
+  font-style: italic;
+}
+.fandom-list { display: flex; flex-direction: column; gap: 14px; }
+.fandom-item {
+  border-left: 2px solid var(--teal-mid);
+  padding-left: 12px;
+}
+.fandom-topic {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--celery);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+.fandom-summary {
+  font-size: 13px;
+  color: var(--teal-light);
+  line-height: 1.5;
+}
+.fandom-sources { margin-top: 6px; }
+.fandom-sources a {
+  font-size: 10px;
+  color: var(--teal-mid);
+  margin-right: 8px;
+  text-decoration: underline;
+}
+
+/* Digest error box */
+.digest-error {
+  display: none;
+  background: #fff2f2;
+  border: 2px solid #d96262;
+  margin: 14px 16px;
+  border-radius: 12px;
+  padding: 14px 16px;
+  text-align: center;
+}
+.digest-error.show { display: block; }
+.digest-error-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a83838;
+  margin-bottom: 4px;
+}
+.digest-error-detail {
+  font-size: 13px;
+  color: #6a2020;
+  line-height: 1.4;
+}
+
 .digest-end {
   display: none;
   background: var(--celery);
@@ -711,6 +852,40 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   cursor: pointer;
 }
 
+.friend-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(1, 57, 74, 0.08);
+  gap: 12px;
+}
+.friend-setting-row:last-child { border-bottom: none; }
+.btn-small-remove {
+  background: transparent;
+  border: 1.5px solid var(--teal-mid);
+  color: var(--teal-dark);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn-small-remove:hover { background: var(--teal-light); }
+#addFriendForm {
+  display: none;
+  padding: 12px 16px;
+  background: rgba(238, 251, 213, 0.4);
+  border-top: 1px solid rgba(1, 57, 74, 0.08);
+}
+#addFriendForm input {
+  width: 100%;
+  font-size: 14px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
 .config-input-wrap {
   padding: 14px 16px;
 }
@@ -796,6 +971,27 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <button class="btn-primary" style="max-width:220px;margin:0 auto" onclick="switchScreen('settings')">Go to Settings</button>
     </div>
 
+    <div class="digest-error" id="digestError">
+      <div class="digest-error-title">Digest failed</div>
+      <div class="digest-error-detail"></div>
+      <button class="btn-secondary" style="margin-top:10px;max-width:200px;margin-left:auto;margin-right:auto" onclick="loadDigest(true)">Try again</button>
+    </div>
+
+    <!-- FRIENDS -->
+    <div class="friends-box" id="friendsBox">
+      <div class="friends-box-label">From your people</div>
+      <div class="friends-list" id="friendsList"></div>
+    </div>
+
+    <!-- FANDOM INTERPRETATION -->
+    <div class="fandom-box" id="fandomBox">
+      <div class="fandom-box-header">
+        <div class="fandom-box-label">Fandom read</div>
+      </div>
+      <div class="fandom-status"></div>
+      <div class="fandom-list" id="fandomList"></div>
+    </div>
+
     <div class="digest-list" id="digestList"></div>
 
     <div class="digest-end" id="digestEnd">
@@ -856,6 +1052,45 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     <div class="screen-header">
       <div class="screen-label">Present Tense</div>
       <div class="screen-title">Settings.</div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Fandom Topics &mdash; deep read</div>
+      <div class="settings-card">
+        <div style="padding:12px 16px 4px;font-size:12px;color:var(--text-mid);line-height:1.5">
+          These get a full web-search interpretation of current discourse. Keep to 4&ndash;6 for speed/cost.
+        </div>
+        <div class="chip-list" id="fandomTopicsChipList"></div>
+        <div class="chip-add-row">
+          <input type="text" id="newFandomTopicInput" placeholder="e.g. Heated Rivalry" onkeydown="if(event.key==='Enter')addFandomTopic()">
+          <button class="chip-add-btn" onclick="addFandomTopic()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Friends</div>
+      <div class="settings-card">
+        <div style="padding:12px 16px 4px;font-size:12px;color:var(--text-mid);line-height:1.5">
+          Add anyone whose posts you want to catch without scrolling. Substack is checked via RSS. Instagram is best-effort &mdash; paste the profile URL or @handle.
+        </div>
+        <div id="friendsSettingsList" style="padding:8px 16px 4px"></div>
+        <div class="add-friend-form" id="addFriendForm" style="display:none;padding:12px 16px;background:var(--teal-light);border-radius:12px;margin:8px 16px">
+          <div class="form-row"><label class="form-label">Name</label>
+            <input type="text" id="newFriendName" placeholder="Their name"></div>
+          <div class="form-row"><label class="form-label">Substack (optional)</label>
+            <input type="url" id="newFriendSubstack" placeholder="https://theirname.substack.com"></div>
+          <div class="form-row"><label class="form-label">Instagram handle or URL (optional)</label>
+            <input type="text" id="newFriendIG" placeholder="@theirhandle"></div>
+          <div class="form-actions">
+            <button class="btn-secondary" onclick="toggleAddFriend()">Cancel</button>
+            <button class="btn-primary" onclick="saveFriend()">Save</button>
+          </div>
+        </div>
+        <div style="padding:8px 16px 14px">
+          <button class="btn-ghost" onclick="toggleAddFriend()">+ Add friend</button>
+        </div>
+      </div>
     </div>
 
     <div class="settings-section">
@@ -998,6 +1233,15 @@ const DEFAULT_QUESTIONS = [
   "quick check: are you okay?"
 ];
 
+const DEFAULT_FANDOM_TOPICS = [
+  "Heated Rivalry",
+  "Hudson Williams",
+  "Connor Storrie",
+  "Hudcon"
+];
+
+const DEFAULT_FRIENDS = [];
+
 const THURSDAY_Q = "what will make you feel better right now \u2014 a few minutes on X, or a check in with a friend?";
 
 // ══ STORAGE ══
@@ -1008,15 +1252,21 @@ function load(key, fallback) {
 function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
 let S = {
-  topics:      load('pt_topics',      DEFAULT_TOPICS),
-  sources:     load('pt_sources',     DEFAULT_SOURCES),
-  questions:   load('pt_questions',   DEFAULT_QUESTIONS),
-  research:    load('pt_research',    []),
-  digest:      load('pt_digest',      null),
-  digestTime:  load('pt_digest_time', 0),
-  workerUrl:   load('pt_worker_url',  ''),
-  apiKey:      load('pt_api_key',     ''),
-  qIdx:        0,
+  topics:        load('pt_topics',         DEFAULT_TOPICS),
+  fandomTopics:  load('pt_fandom_topics',  DEFAULT_FANDOM_TOPICS),
+  friends:       load('pt_friends',        DEFAULT_FRIENDS),
+  sources:       load('pt_sources',        DEFAULT_SOURCES),
+  questions:     load('pt_questions',      DEFAULT_QUESTIONS),
+  research:      load('pt_research',       []),
+  digest:        load('pt_digest',         null),
+  fandom:        load('pt_fandom',         null),
+  friendsData:   load('pt_friends_data',   null),
+  digestTime:    load('pt_digest_time',    0),
+  fandomTime:    load('pt_fandom_time',    0),
+  friendsTime:   load('pt_friends_time',   0),
+  workerUrl:     load('pt_worker_url',     ''),
+  apiKey:        load('pt_api_key',        ''),
+  qIdx:          0,
 };
 
 // ══ NAV ══
@@ -1072,23 +1322,38 @@ function digestIsStale() {
 
 function renderDigest() {
   document.getElementById('digestSessionLabel').textContent = getSession();
+  updateDigestTimestamp();
+  renderFriends(S.friendsData);
+  renderFandom(S.fandom);
+  loadDigest(false);
+}
+
+function updateDigestTimestamp() {
   const ts = document.getElementById('digestTimestamp');
   if (S.digestTime) {
     const d = new Date(S.digestTime);
     ts.textContent = 'Updated ' + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  } else {
+    ts.textContent = '';
   }
-  loadDigest(false);
 }
 
 async function loadDigest(force) {
   if (!S.workerUrl || !S.apiKey) {
     document.getElementById('digestLoading').classList.remove('show');
+    document.getElementById('digestError').classList.remove('show');
     document.getElementById('digestSetupMsg').classList.add('show');
     document.getElementById('digestList').innerHTML = '';
     document.getElementById('digestEnd').classList.remove('show');
     return;
   }
   document.getElementById('digestSetupMsg').classList.remove('show');
+  document.getElementById('digestError').classList.remove('show');
+
+  // Fire friends + fandom alongside digest (parallel, non-blocking)
+  loadFriends(force);
+  loadFandom(force);
+
   if (!force && S.digest && !digestIsStale()) {
     renderDigestItems(S.digest);
     return;
@@ -1103,23 +1368,45 @@ async function loadDigest(force) {
       body: JSON.stringify({ api_key: S.apiKey, sources: S.sources, topics: S.topics, session: getSession() })
     });
     const data = await res.json();
-    S.digest = data.items || [];
+    if (!res.ok || data.error) {
+      showDigestError(data.error || ('HTTP ' + res.status), data.detail || data.message);
+      return;
+    }
+    if (!Array.isArray(data.items)) {
+      showDigestError('parse_error', 'Response had no items array.');
+      return;
+    }
+    S.digest = data.items;
     S.digestTime = Date.now();
     save('pt_digest', S.digest);
     save('pt_digest_time', S.digestTime);
+    updateDigestTimestamp();
     renderDigestItems(S.digest);
-  } catch {
-    showToast('Could not load digest. Check your Worker URL.');
-    document.getElementById('digestLoading').classList.remove('show');
+  } catch (e) {
+    showDigestError('network', e.message || 'Could not reach the Worker.');
   }
+}
+
+function showDigestError(code, detail) {
+  document.getElementById('digestLoading').classList.remove('show');
+  const box = document.getElementById('digestError');
+  box.querySelector('.digest-error-detail').textContent =
+    (code === 'network' ? 'Could not reach the Worker.' :
+     code === 'anthropic_error' ? 'Anthropic rejected the request.' :
+     code === 'no_rss' ? 'None of your RSS feeds responded.' :
+     code === 'parse_error' ? 'The AI response could not be parsed.' :
+     'Something went wrong.') + (detail ? ' (' + detail + ')' : '');
+  box.classList.add('show');
 }
 
 function renderDigestItems(items) {
   document.getElementById('digestLoading').classList.remove('show');
   const list = document.getElementById('digestList');
   list.innerHTML = '';
+  const end = document.getElementById('digestEnd');
   if (!items || items.length === 0) {
     list.innerHTML = '<p style="text-align:center;padding:48px 24px;color:var(--text-mid);font-size:14px">Nothing notable today.</p>';
+    end.classList.add('show');
     return;
   }
   items.forEach(item => {
@@ -1132,7 +1419,143 @@ function renderDigestItems(items) {
     if (item.url) el.onclick = () => window.open(item.url, '_blank');
     list.appendChild(el);
   });
-  document.getElementById('digestEnd').classList.add('show');
+  end.classList.add('show');
+}
+
+// ══ FANDOM ══
+function fandomIsStale() {
+  return (Date.now() - S.fandomTime) > 6 * 60 * 60 * 1000;
+}
+
+async function loadFandom(force) {
+  if (!S.workerUrl || !S.apiKey) return;
+  if (!S.fandomTopics || !S.fandomTopics.length) { renderFandom([]); return; }
+  if (!force && S.fandom && !fandomIsStale()) { renderFandom(S.fandom); return; }
+  const box = document.getElementById('fandomBox');
+  box.classList.add('loading');
+  box.querySelector('.fandom-status').textContent = 'reading the fandom so you don\u2019t have to\u2026';
+  try {
+    const res = await fetch(S.workerUrl + '/fandom', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: S.apiKey, fandom_topics: S.fandomTopics })
+    });
+    const data = await res.json();
+    if (!res.ok || data.error || !Array.isArray(data.fandom)) {
+      box.classList.remove('loading');
+      box.querySelector('.fandom-status').textContent = 'couldn\u2019t pull fandom updates right now.';
+      return;
+    }
+    S.fandom = data.fandom;
+    S.fandomTime = Date.now();
+    save('pt_fandom', S.fandom);
+    save('pt_fandom_time', S.fandomTime);
+    renderFandom(S.fandom);
+  } catch {
+    box.classList.remove('loading');
+    box.querySelector('.fandom-status').textContent = 'couldn\u2019t pull fandom updates right now.';
+  }
+}
+
+function renderFandom(fandom) {
+  const box = document.getElementById('fandomBox');
+  const list = document.getElementById('fandomList');
+  box.classList.remove('loading');
+  if (!fandom || fandom.length === 0) {
+    if (!S.fandomTopics || !S.fandomTopics.length) {
+      box.style.display = 'none';
+      return;
+    }
+    box.style.display = 'block';
+    list.innerHTML = '';
+    box.querySelector('.fandom-status').textContent = 'no fandom read yet \u2014 tap refresh.';
+    return;
+  }
+  box.style.display = 'block';
+  box.querySelector('.fandom-status').textContent = '';
+  list.innerHTML = '';
+  fandom.forEach(f => {
+    const el = document.createElement('div');
+    el.className = 'fandom-item';
+    let srcHtml = '';
+    if (Array.isArray(f.sources) && f.sources.length) {
+      srcHtml = '<div class="fandom-sources">' +
+        f.sources.slice(0, 3).map((s, i) =>
+          '<a href="' + esc(s) + '" target="_blank" onclick="event.stopPropagation()">src ' + (i + 1) + '</a>'
+        ).join(' ') + '</div>';
+    }
+    el.innerHTML =
+      '<div class="fandom-topic">' + esc(f.topic || '') + '</div>' +
+      '<div class="fandom-summary">' + esc(f.summary || '') + '</div>' +
+      srcHtml;
+    list.appendChild(el);
+  });
+}
+
+// ══ FRIENDS ══
+function friendsIsStale() {
+  return (Date.now() - S.friendsTime) > 2 * 60 * 60 * 1000;
+}
+
+async function loadFriends(force) {
+  if (!S.workerUrl) return;
+  if (!S.friends || !S.friends.length) { renderFriends([]); return; }
+  if (!force && S.friendsData && !friendsIsStale()) { renderFriends(S.friendsData); return; }
+  try {
+    const res = await fetch(S.workerUrl + '/friends-check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ friends: S.friends })
+    });
+    const data = await res.json();
+    if (!res.ok || !Array.isArray(data.friends)) return;
+    S.friendsData = data.friends;
+    S.friendsTime = Date.now();
+    save('pt_friends_data', S.friendsData);
+    save('pt_friends_time', S.friendsTime);
+    renderFriends(S.friendsData);
+  } catch {}
+}
+
+function renderFriends(friendsData) {
+  const box = document.getElementById('friendsBox');
+  const list = document.getElementById('friendsList');
+  if (!S.friends || !S.friends.length) { box.style.display = 'none'; return; }
+  if (!friendsData || !friendsData.length) {
+    box.style.display = 'block';
+    list.innerHTML = '<p class="friends-empty">no updates yet \u2014 tap refresh.</p>';
+    return;
+  }
+  // Only show friends that have something new
+  const newOnes = friendsData.filter(f =>
+    (f.substack && f.substack.new) || (f.instagram && f.instagram.new)
+  );
+  if (!newOnes.length) {
+    box.style.display = 'block';
+    list.innerHTML = '<p class="friends-empty">all quiet. nothing new from your people.</p>';
+    return;
+  }
+  box.style.display = 'block';
+  list.innerHTML = '';
+  newOnes.forEach(f => {
+    const el = document.createElement('div');
+    el.className = 'friend-item';
+    let parts = '<div class="friend-name">' + esc(f.name || '') + '</div>';
+    if (f.substack && f.substack.new) {
+      parts += '<a class="friend-update substack" href="' + esc(f.substack.url) + '" target="_blank">' +
+               '<span class="friend-update-label">new substack</span>' +
+               '<span class="friend-update-title">' + esc(f.substack.title || '') + '</span>' +
+               '</a>';
+    }
+    if (f.instagram && f.instagram.new) {
+      parts += '<a class="friend-update ig" href="' + esc(f.instagram.url) + '" target="_blank">' +
+               '<span class="friend-update-label">new on instagram</span>' +
+               (f.instagram.preview ? '<span class="friend-update-title">' + esc(f.instagram.preview) + '</span>' : '') +
+               '</a>';
+    }
+    el.innerHTML = parts;
+    list.appendChild(el);
+  });
 }
 
 // ══ RESEARCH ══
@@ -1146,20 +1569,20 @@ function renderResearch() {
     list.innerHTML = '<p style="text-align:center;padding:48px 24px;color:var(--text-mid);font-size:14px">Nothing yet.</p>';
     return;
   }
-  items.forEach((item, idx) => {
+  items.forEach((item) => {
     const card = document.createElement('div');
     card.className = 'research-card' + (item.changed ? ' changed' : '');
     let linksHtml = '';
     if (item.links && item.links.length) {
       linksHtml =
-        '<button class="research-check-btn" onclick="checkLinks(' + idx + ');event.stopPropagation()">&#8635; Check</button>' +
+        '<button class="research-check-btn" onclick="checkLinks(' + item.id + ');event.stopPropagation()">&#8635; Check</button>' +
         item.links.map(l => '<a class="research-link-btn" href="' + esc(l) + '" target="_blank" onclick="event.stopPropagation()">View &rarr;</a>').join('');
     }
     card.innerHTML =
       '<div class="research-card-top">' +
         '<div class="research-card-name">' + esc(item.name) + '</div>' +
         '<div class="research-changed-dot"></div>' +
-        '<button class="research-delete-btn" onclick="deleteResearch(' + idx + ');event.stopPropagation()">&#215;</button>' +
+        '<button class="research-delete-btn" onclick="deleteResearch(' + item.id + ');event.stopPropagation()">&#215;</button>' +
       '</div>' +
       (item.notes ? '<div class="research-card-notes">' + esc(item.notes) + '</div>' : '') +
       '<div class="research-card-meta">' +
@@ -1204,16 +1627,18 @@ function saveResearchItem() {
   renderResearch();
 }
 
-function deleteResearch(idx) {
-  if (!confirm('Remove "' + S.research[idx].name + '"?')) return;
-  S.research.splice(idx, 1);
+function deleteResearch(id) {
+  const item = S.research.find(r => r.id === id);
+  if (!item) return;
+  if (!confirm('Remove "' + item.name + '"?')) return;
+  S.research = S.research.filter(r => r.id !== id);
   save('pt_research', S.research);
   renderResearch();
 }
 
-async function checkLinks(idx) {
-  const item = S.research[idx];
-  if (!item.links || !item.links.length) return;
+async function checkLinks(id) {
+  const item = S.research.find(r => r.id === id);
+  if (!item || !item.links || !item.links.length) return;
   if (!S.workerUrl) { showToast('Add Worker URL in Settings first'); return; }
   showToast('Checking\u2026');
   try {
@@ -1223,18 +1648,23 @@ async function checkLinks(idx) {
       body: JSON.stringify({ id: item.id, urls: item.links })
     });
     const data = await res.json();
-    S.research[idx].changed = data.changed || false;
+    // Re-find in case list changed during fetch
+    const current = S.research.find(r => r.id === id);
+    if (!current) return;
+    current.changed = !!data.changed;
     save('pt_research', S.research);
     renderResearch();
-    showToast(data.changed ? 'Something changed' : 'No changes');
+    showToast(data.baseline ? 'Baseline saved' : (data.changed ? 'Something changed' : 'No changes'));
   } catch { showToast('Check failed'); }
 }
 
 // ══ SETTINGS ══
 function renderSettings() {
-  renderChipList('topicsChipList',   S.topics,    'pt_topics',    1);
-  renderChipList('sourcesChipList',  S.sources,   'pt_sources',   1);
-  renderChipList('questionsChipList',S.questions, 'pt_questions', 1);
+  renderChipList('topicsChipList',       S.topics,       'pt_topics',        1);
+  renderChipList('sourcesChipList',      S.sources,      'pt_sources',       1);
+  renderChipList('questionsChipList',    S.questions,    'pt_questions',     1);
+  renderChipList('fandomTopicsChipList', S.fandomTopics, 'pt_fandom_topics', 0);
+  renderFriendsSettings();
   document.getElementById('workerUrlInput').value = S.workerUrl;
   document.getElementById('apiKeyInput').value    = S.apiKey;
 }
@@ -1252,12 +1682,74 @@ function renderChipList(containerId, arr, storeKey, minLen) {
 }
 
 function removeChip(key, idx, minLen) {
-  const map = { pt_topics: 'topics', pt_sources: 'sources', pt_questions: 'questions' };
+  const map = {
+    pt_topics: 'topics',
+    pt_sources: 'sources',
+    pt_questions: 'questions',
+    pt_fandom_topics: 'fandomTopics'
+  };
   const prop = map[key];
+  if (!prop) return;
   if (S[prop].length <= minLen) { showToast('Keep at least one'); return; }
   S[prop].splice(idx, 1);
   save(key, S[prop]);
   renderSettings();
+}
+
+function addFandomTopic() {
+  const v = document.getElementById('newFandomTopicInput').value.trim();
+  if (!v) return;
+  S.fandomTopics.push(v); save('pt_fandom_topics', S.fandomTopics);
+  document.getElementById('newFandomTopicInput').value = '';
+  renderSettings();
+}
+
+function toggleAddFriend() {
+  const el = document.getElementById('addFriendForm');
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function saveFriend() {
+  const name = document.getElementById('newFriendName').value.trim();
+  const sub  = document.getElementById('newFriendSubstack').value.trim();
+  const ig   = document.getElementById('newFriendIG').value.trim();
+  if (!name) { showToast('Name required'); return; }
+  if (!sub && !ig) { showToast('Add at least one link'); return; }
+  const id = 'f_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  S.friends.push({ id, name, substack: sub, instagram: ig });
+  save('pt_friends', S.friends);
+  document.getElementById('newFriendName').value = '';
+  document.getElementById('newFriendSubstack').value = '';
+  document.getElementById('newFriendIG').value = '';
+  document.getElementById('addFriendForm').style.display = 'none';
+  renderSettings();
+}
+
+function deleteFriend(id) {
+  const f = S.friends.find(x => x.id === id);
+  if (!f) return;
+  if (!confirm('Remove ' + f.name + '?')) return;
+  S.friends = S.friends.filter(x => x.id !== id);
+  save('pt_friends', S.friends);
+  renderSettings();
+}
+
+function renderFriendsSettings() {
+  const el = document.getElementById('friendsSettingsList');
+  if (!el) return;
+  if (!S.friends.length) {
+    el.innerHTML = '<div style="opacity:0.6;font-size:14px;padding:8px 0;">No friends yet. Add someone to get notified when they post.</div>';
+    return;
+  }
+  el.innerHTML = S.friends.map(f => {
+    const bits = [];
+    if (f.substack)  bits.push('Substack');
+    if (f.instagram) bits.push('IG');
+    return '<div class="friend-setting-row">' +
+      '<div><strong>' + esc(f.name) + '</strong><br><span style="font-size:12px;opacity:0.7;">' + bits.join(' + ') + '</span></div>' +
+      '<button class="btn-small-remove" onclick="deleteFriend(\'' + f.id + '\')">Remove</button>' +
+    '</div>';
+  }).join('');
 }
 
 function addTopic() {
