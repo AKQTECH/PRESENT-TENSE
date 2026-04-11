@@ -1485,11 +1485,25 @@ function renderFandom(fandom) {
         ).join(' ') + '</div>';
     }
     el.innerHTML =
-      '<div class="fandom-topic">' + esc(f.topic || '') + '</div>' +
-      '<div class="fandom-summary">' + esc(f.summary || '') + '</div>' +
+      '<div class="fandom-topic">' + esc(cleanCitations(f.topic || '')) + '</div>' +
+      '<div class="fandom-summary">' + esc(cleanCitations(f.summary || '')) + '</div>' +
       srcHtml;
     list.appendChild(el);
   });
+}
+
+// Client-side safety net for any cite markup that sneaks through
+// (old cached fandom data in localStorage, or model echoing tags)
+function cleanCitations(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/<cite\b[^>]*>/gi, '')
+    .replace(/<\/cite>/gi, '')
+    .replace(/<\/?[a-z][^>]*>/gi, '')
+    .replace(/\[\^?\d+(?:[,\s-]*\d+)*\]/g, '')
+    .replace(/ {2,}/g, ' ')
+    .replace(/\s+([.,;:!?])/g, '$1')
+    .trim();
 }
 
 // ══ FRIENDS ══
