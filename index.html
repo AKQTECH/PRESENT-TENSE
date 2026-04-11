@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Present Tense">
+<meta name="theme-color" content="#add4d9">
+<title>Present Tense</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.ico">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --teal-light: #add4d9;
+  --teal-mid:   #70a1ae;
+  --teal-dark:  #01394a;
+  --celery:     #eefbd5;
+  --white:      #ffffff;
+  --border:     rgba(1, 57, 74, 0.12);
+  --text-mid:   rgba(1, 57, 74, 0.55);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--teal-light);
+  color: var(--teal-dark);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── APP SHELL ── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.screen {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(68px + var(--safe-bottom));
+}
+.screen.active { display: block; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding-bottom: var(--safe-bottom);
+  z-index: 100;
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--teal-mid);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  gap: 3px;
+  transition: color 0.15s;
+}
+.nav-btn.active { color: var(--teal-dark); }
+.nav-icon {
+  font-size: 18px;
+  line-height: 1;
+  font-style: normal;
+}
+
+/* ── SHARED ── */
+.screen-header {
+  background: var(--teal-dark);
+  padding: 20px 20px 16px;
+}
+.screen-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal-mid);
+  margin-bottom: 4px;
+}
+.screen-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--celery);
+}
+
+.btn-primary {
+  display: block;
+  width: 100%;
+  background: var(--teal-dark);
+  color: var(--celery);
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: opacity 0.15s;
+  text-align: center;
+}
+.btn-primary:hover { opacity: 0.85; }
+
+.btn-secondary {
+  display: block;
+  width: 100%;
+  background: var(--white);
+  color: var(--teal-dark);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.btn-secondary:hover { border-color: var(--teal-mid); }
+
+.btn-ghost {
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+input[type="text"], input[type="url"], input[type="number"], textarea {
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--teal-dark);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
+  resize: none;
+}
+input:focus, textarea:focus { border-color: var(--teal-mid); }
+
+/* ── SCREEN 1: INTERRUPT ── */
+#screen-interrupt {
+  background: var(--teal-light);
+  min-height: 100%;
+}
+
+.interrupt-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px 24px;
+  text-align: center;
+  min-height: calc(100vh - 68px);
+}
+
+.thursday-badge {
+  background: var(--teal-dark);
+  color: var(--celery);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: 20px;
+  margin-bottom: 32px;
+  display: none;
+}
+.thursday-badge.show { display: inline-block; }
+
+.interrupt-pause {
+  font-size: 52px;
+  color: var(--celery);
+  line-height: 1;
+  margin-bottom: 28px;
+  letter-spacing: -4px;
+}
+
+.interrupt-question {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--celery);
+  line-height: 1.35;
+  margin-bottom: 44px;
+  max-width: 300px;
+}
+
+.interrupt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  align-items: center;
+}
+
+.btn-open-x {
+  width: 100%;
+  background: var(--teal-mid);
+  color: var(--celery);
+  border: none;
+  border-radius: 14px;
+  padding: 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: opacity 0.15s;
+}
+.btn-open-x:hover { opacity: 0.85; }
+
+.btn-something-else {
+  width: 100%;
+  background: var(--celery);
+  color: var(--teal-dark);
+  border: none;
+  border-radius: 14px;
+  padding: 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: opacity 0.15s;
+}
+.btn-something-else:hover { opacity: 0.85; }
+
+/* Alternatives panel */
+.alternatives-panel {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.alternatives-panel.show { display: flex; }
+
+.alt-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255,255,255,0.25);
+  border: 2px solid rgba(255,255,255,0.4);
+  border-radius: 14px;
+  padding: 15px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--celery);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+  backdrop-filter: blur(4px);
+}
+.alt-btn:hover { background: rgba(255,255,255,0.35); }
+.alt-symbol {
+  font-size: 18px;
+  color: var(--celery);
+  width: 24px;
+  text-align: center;
+}
+
+.cycle-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: rgba(238,251,213,0.55);
+  cursor: pointer;
+  padding: 8px;
+  line-height: 1;
+  transition: color 0.15s;
+  margin-top: 4px;
+}
+.cycle-btn:hover { color: var(--celery); }
+
+/* Thursday mode — stronger interrupt */
+.thursday-wrap {
+  background: var(--teal-dark);
+}
+.thursday-wrap .interrupt-pause { color: var(--teal-light); }
+.thursday-wrap .interrupt-question { color: var(--celery); }
+.thursday-wrap .cycle-btn { color: rgba(238,251,213,0.3); }
+
+/* ── SCREEN 2: DIGEST ── */
+#screen-digest { background: var(--white); }
+
+.digest-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px 0;
+}
+.digest-session-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal-mid);
+}
+.digest-refresh-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--teal-mid);
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: color 0.15s;
+  line-height: 1;
+}
+.digest-refresh-btn:hover { color: var(--teal-dark); }
+
+.digest-loading {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+  gap: 16px;
+}
+.digest-loading.show { display: flex; }
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--teal-light);
+  border-top-color: var(--teal-dark);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.digest-loading p { color: var(--text-mid); font-size: 14px; }
+
+.digest-setup-msg {
+  display: none;
+  text-align: center;
+  padding: 48px 28px;
+}
+.digest-setup-msg.show { display: block; }
+.digest-setup-msg p {
+  margin-bottom: 16px;
+  line-height: 1.65;
+  color: var(--text-mid);
+  font-size: 14px;
+}
+.digest-setup-msg strong { color: var(--teal-dark); }
+
+.digest-list { padding: 8px 0 0; }
+
+.digest-item {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.digest-item:hover { background: #f7fcfc; }
+.digest-item:last-child { border-bottom: none; }
+
+.digest-item-source {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal-mid);
+  margin-bottom: 5px;
+}
+.digest-item-headline {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  line-height: 1.3;
+  margin-bottom: 5px;
+}
+.digest-item-summary {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.55;
+}
+
+.digest-end {
+  display: none;
+  background: var(--celery);
+  margin: 20px;
+  border-radius: 16px;
+  padding: 40px 24px;
+  text-align: center;
+}
+.digest-end.show { display: block; }
+.digest-end-mark {
+  font-size: 28px;
+  color: var(--teal-dark);
+  margin-bottom: 14px;
+  letter-spacing: 6px;
+}
+.digest-end h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  margin-bottom: 6px;
+}
+.digest-end p {
+  font-size: 14px;
+  color: var(--teal-mid);
+}
+
+/* ── SCREEN 3: I WANT IT ── */
+#screen-research { background: var(--white); }
+
+.research-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 0;
+}
+.research-count {
+  font-size: 12px;
+  color: var(--text-mid);
+}
+
+.research-list { padding: 12px 16px; }
+
+.research-card {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  border: 2px solid var(--border);
+  transition: border-color 0.15s;
+}
+.research-card.changed { border-color: var(--teal-dark); }
+
+.research-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.research-card-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  flex: 1;
+}
+.research-changed-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--teal-dark);
+  flex-shrink: 0;
+  margin-top: 6px;
+  display: none;
+}
+.research-card.changed .research-changed-dot { display: block; }
+
+.research-card-notes {
+  font-size: 13px;
+  color: var(--text-mid);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.research-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.research-price {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  background: var(--celery);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.research-check-btn {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--teal-mid);
+  background: var(--teal-light);
+  border: none;
+  border-radius: 8px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: color 0.15s;
+}
+.research-check-btn:hover { color: var(--teal-dark); }
+.research-link-btn {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  text-decoration: none;
+  background: var(--celery);
+  border-radius: 8px;
+  padding: 4px 12px;
+}
+.research-delete-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--border);
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.research-delete-btn:hover { color: var(--teal-dark); }
+
+.research-changed-note {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--teal-dark);
+  font-weight: 800;
+}
+
+/* Add form */
+.add-research-form {
+  display: none;
+  background: var(--teal-light);
+  border-radius: 14px;
+  padding: 18px;
+  margin: 0 16px 12px;
+  border: 2px solid var(--teal-mid);
+}
+.add-research-form.show { display: block; }
+.form-row { margin-bottom: 10px; }
+.form-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal-dark);
+  margin-bottom: 6px;
+  display: block;
+}
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.form-actions .btn-primary { flex: 1; padding: 12px; font-size: 14px; }
+.form-actions .btn-secondary { flex: 1; padding: 12px; font-size: 14px; }
+
+.link-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.link-row input { flex: 1; font-size: 13px; padding: 8px 10px; }
+.remove-link-btn {
+  background: none;
+  border: none;
+  color: var(--teal-mid);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 4px;
+  transition: color 0.15s;
+}
+.remove-link-btn:hover { color: var(--teal-dark); }
+.add-link-btn {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  padding: 4px 0;
+}
+
+/* ── SCREEN 4: SETTINGS ── */
+#screen-settings { background: var(--teal-light); }
+
+.settings-section {
+  margin: 16px 16px 0;
+}
+.settings-section-title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal-mid);
+  margin-bottom: 8px;
+  padding: 0 2px;
+}
+.settings-card {
+  background: var(--white);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row-label {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--teal-dark);
+}
+.settings-row-sub {
+  font-size: 12px;
+  color: var(--text-mid);
+  font-weight: 400;
+  margin-top: 2px;
+}
+.settings-row-action {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 16px 4px;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--teal-light);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--teal-dark);
+}
+.chip-remove {
+  background: none;
+  border: none;
+  color: var(--teal-mid);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+.chip-remove:hover { color: var(--teal-dark); }
+
+.chip-add-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px 14px;
+}
+.chip-add-row input { flex: 1; font-size: 14px; padding: 10px 12px; }
+.chip-add-btn {
+  background: var(--teal-dark);
+  color: var(--celery);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.config-input-wrap {
+  padding: 14px 16px;
+}
+.config-input-wrap input {
+  font-size: 13px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+.config-input-wrap .btn-primary { font-size: 13px; padding: 12px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: var(--teal-dark);
+  color: var(--celery);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 13px;
+  opacity: 0;
+  transition: all 0.25s;
+  pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══ SCREEN 1: CHECK IN ══ -->
+  <div id="screen-interrupt" class="screen active">
+    <div class="interrupt-wrap" id="interruptWrap">
+      <div class="thursday-badge" id="thursdayBadge">it&rsquo;s thursday</div>
+      <div class="interrupt-pause">&#8741;</div>
+      <div class="interrupt-question" id="interruptQuestion">
+        you can look &mdash; but first let&rsquo;s check in. what do you really need right now?
+      </div>
+      <div class="interrupt-actions" id="interruptActions">
+        <button class="btn-open-x" onclick="openX()">Open X &rarr;</button>
+        <button class="btn-something-else" onclick="toggleAlternatives()">something else</button>
+        <div class="alternatives-panel" id="altPanel">
+          <a class="alt-btn" href="sms:">
+            <span class="alt-symbol">&#9993;</span> Text someone
+          </a>
+          <a class="alt-btn" href="https://www.youversion.com/the-bible-app/" target="_blank">
+            <span class="alt-symbol">&#10013;</span> Bible
+          </a>
+          <a class="alt-btn" href="https://soultime.com" target="_blank">
+            <span class="alt-symbol">&#9675;</span> Soultime
+          </a>
+        </div>
+        <button class="cycle-btn" onclick="cycleQuestion()" title="Different question">&#10227;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 2: DIGEST ══ -->
+  <div id="screen-digest" class="screen">
+    <div class="screen-header">
+      <div class="screen-label" id="digestSessionLabel">Morning Digest</div>
+      <div class="screen-title">What&rsquo;s happening.</div>
+    </div>
+
+    <div class="digest-controls">
+      <span class="digest-session-label" id="digestTimestamp"></span>
+      <button class="digest-refresh-btn" onclick="loadDigest(true)" title="Refresh">&#8635;</button>
+    </div>
+
+    <div class="digest-loading" id="digestLoading">
+      <div class="spinner"></div>
+      <p>Pulling your world together&hellip;</p>
+    </div>
+
+    <div class="digest-setup-msg" id="digestSetupMsg">
+      <p>Your digest needs a <strong>Cloudflare Worker URL</strong> and an <strong>Anthropic API key</strong> to run.</p>
+      <p>Head to Settings to add them &mdash; about 10 minutes to set up, then it runs itself.</p>
+      <button class="btn-primary" style="max-width:220px;margin:0 auto" onclick="switchScreen('settings')">Go to Settings</button>
+    </div>
+
+    <div class="digest-list" id="digestList"></div>
+
+    <div class="digest-end" id="digestEnd">
+      <div class="digest-end-mark">&#8211;&#8212;&#8211;</div>
+      <h2>all caught up.</h2>
+      <p>you did it. you&rsquo;re free.</p>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: I WANT IT ══ -->
+  <div id="screen-research" class="screen">
+    <div class="screen-header">
+      <div class="screen-label">Present Tense</div>
+      <div class="screen-title">I want it.</div>
+    </div>
+
+    <div class="research-header-row">
+      <span class="research-count" id="researchCount"></span>
+      <button class="btn-ghost" onclick="toggleAddForm()">+ Add</button>
+    </div>
+
+    <div class="add-research-form" id="addResearchForm">
+      <div class="form-row">
+        <label class="form-label">What is it</label>
+        <input type="text" id="newItemName" placeholder="rattan coffee table">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Notes</label>
+        <textarea id="newItemNotes" rows="2" placeholder="what you&apos;re waiting for, why you want it&hellip;"></textarea>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Current price</label>
+        <input type="text" id="newItemPrice" placeholder="$249">
+      </div>
+      <div class="form-row">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <label class="form-label" style="margin:0">Links to check</label>
+          <button class="add-link-btn" onclick="addLinkField()">+ add link</button>
+        </div>
+        <div id="linkFields">
+          <div class="link-row">
+            <input type="url" placeholder="https://&hellip;" class="link-input">
+            <button class="remove-link-btn" onclick="removeLinkField(this)">&#215;</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-secondary" onclick="toggleAddForm()">Cancel</button>
+        <button class="btn-primary" onclick="saveResearchItem()">Save</button>
+      </div>
+    </div>
+
+    <div class="research-list" id="researchList"></div>
+  </div>
+
+  <!-- ══ SCREEN 4: SETTINGS ══ -->
+  <div id="screen-settings" class="screen">
+    <div class="screen-header">
+      <div class="screen-label">Present Tense</div>
+      <div class="screen-title">Settings.</div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Interest Topics</div>
+      <div class="settings-card">
+        <div class="chip-list" id="topicsChipList"></div>
+        <div class="chip-add-row">
+          <input type="text" id="newTopicInput" placeholder="Add a topic&hellip;" onkeydown="if(event.key==='Enter')addTopic()">
+          <button class="chip-add-btn" onclick="addTopic()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">RSS Sources</div>
+      <div class="settings-card">
+        <div class="chip-list" id="sourcesChipList"></div>
+        <div class="chip-add-row">
+          <input type="url" id="newSourceInput" placeholder="https://deadline.com/feed/" onkeydown="if(event.key==='Enter')addSource()">
+          <button class="chip-add-btn" onclick="addSource()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Check-In Questions</div>
+      <div class="settings-card">
+        <div class="chip-list" id="questionsChipList"></div>
+        <div class="chip-add-row">
+          <input type="text" id="newQuestionInput" placeholder="Add a question&hellip;" onkeydown="if(event.key==='Enter')addQuestion()">
+          <button class="chip-add-btn" onclick="addQuestion()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Backend</div>
+      <div class="settings-card">
+        <div class="config-input-wrap">
+          <label class="form-label">Cloudflare Worker URL</label>
+          <input type="url" id="workerUrlInput" placeholder="https://present-tense.yourname.workers.dev">
+          <label class="form-label" style="margin-top:4px">Anthropic API Key</label>
+          <input type="text" id="apiKeyInput" placeholder="sk-ant-&hellip;">
+          <button class="btn-primary" style="margin-top:4px" onclick="saveConfig()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">About</div>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Present Tense v1</div>
+            <div class="settings-row-sub">Built for April Korto Quioh</div>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Clear cached digest</div>
+            <div class="settings-row-sub">Forces a fresh fetch next time</div>
+          </div>
+          <button class="settings-row-action" onclick="clearDigestCache()">Clear</button>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Reset all data</div>
+            <div class="settings-row-sub">Clears everything except your config</div>
+          </div>
+          <button class="settings-row-action" onclick="clearData()" style="color:var(--teal-mid)">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:24px"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-interrupt" onclick="switchScreen('interrupt')">
+      <span class="nav-icon">&#8741;</span>
+      Check In
+    </button>
+    <button class="nav-btn" id="nav-digest" onclick="switchScreen('digest')">
+      <span class="nav-icon">&#8801;</span>
+      Digest
+    </button>
+    <button class="nav-btn" id="nav-research" onclick="switchScreen('research')">
+      <span class="nav-icon">&#9671;</span>
+      I Want It
+    </button>
+    <button class="nav-btn" id="nav-settings" onclick="switchScreen('settings')">
+      <span class="nav-icon">&#8853;</span>
+      Settings
+    </button>
+  </nav>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ DEFAULTS ══
+const DEFAULT_TOPICS = [
+  "Heated Rivalry","Hudson Williams","Connor Storrie",
+  "Josh O'Connor","Harris Dickinson","Justin Kuritzkes",
+  "Timothee Chalamet","Dakota Johnson","Kristen Stewart",
+  "Hilary Duff","Demi Lovato","Lorde","Kendrick Lamar",
+  "Kaytranada","Remi Wolf","The Pitt","Wonder Man",
+  "A24","Sundance Institute","The Black List","WGA",
+  "Rian Johnson","Critics Choice Awards","Oscars","MUBI",
+  "Independent Film Financing","Zinzi Coogler",
+  "Book Publishing for Screenwriters","The Odyssey",
+  "Kate Berlant","John Early","Ziwe","Meg Stalter",
+  "Langston Kerman","Fred Armisen","Blair Socci",
+  "LA Clippers","Liberian Diaspora","West African Culture",
+  "Plus-Size Fashion","Ankara Fashion","LGBTQ+ Entertainment",
+  "AMC Theatres","Anthropic","Apple","OpenAI",
+  "Nora Ephron","Substack","LA Food Scene",
+  "LA Film Festivals","LACMA","LA Public Library"
+];
+
+const DEFAULT_SOURCES = [
+  "https://deadline.com/feed/",
+  "https://variety.com/feed/",
+  "https://www.indiewire.com/feed/",
+  "https://www.thewrap.com/feed/"
+];
+
+const DEFAULT_QUESTIONS = [
+  "you can look \u2014 but first let\u2019s check in. what do you really need right now?",
+  "hey. before X \u2014 what are you actually feeling?",
+  "is this the scroll, or is this you?",
+  "something on your mind? or just avoiding it?",
+  "who have you been meaning to text?",
+  "what would you be doing if your phone wasn\u2019t in your hand?",
+  "is there something you\u2019re putting off right now?",
+  "are you looking for information, or looking away from something?",
+  "what\u2019s the thing you keep not doing today?",
+  "quick check: are you okay?"
+];
+
+const THURSDAY_Q = "what will make you feel better right now \u2014 a few minutes on X, or a check in with a friend?";
+
+// ══ STORAGE ══
+function load(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch { return fallback; }
+}
+function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+let S = {
+  topics:      load('pt_topics',      DEFAULT_TOPICS),
+  sources:     load('pt_sources',     DEFAULT_SOURCES),
+  questions:   load('pt_questions',   DEFAULT_QUESTIONS),
+  research:    load('pt_research',    []),
+  digest:      load('pt_digest',      null),
+  digestTime:  load('pt_digest_time', 0),
+  workerUrl:   load('pt_worker_url',  ''),
+  apiKey:      load('pt_api_key',     ''),
+  qIdx:        0,
+};
+
+// ══ NAV ══
+function switchScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'digest')   renderDigest();
+  if (name === 'research') renderResearch();
+  if (name === 'settings') renderSettings();
+}
+
+// ══ INTERRUPT ══
+function isThursday() { return new Date().getDay() === 4; }
+
+function initInterrupt() {
+  const badge = document.getElementById('thursdayBadge');
+  const wrap  = document.getElementById('interruptWrap');
+  const qEl   = document.getElementById('interruptQuestion');
+  if (isThursday()) {
+    badge.classList.add('show');
+    wrap.classList.add('thursday-wrap');
+    qEl.textContent = THURSDAY_Q;
+  } else {
+    S.qIdx = Math.floor(Math.random() * S.questions.length);
+    qEl.textContent = S.questions[S.qIdx];
+  }
+}
+
+function cycleQuestion() {
+  if (isThursday()) return;
+  S.qIdx = (S.qIdx + 1) % S.questions.length;
+  document.getElementById('interruptQuestion').textContent = S.questions[S.qIdx];
+  document.getElementById('altPanel').classList.remove('show');
+}
+
+function openX() { window.open('https://x.com', '_blank'); }
+
+function toggleAlternatives() {
+  document.getElementById('altPanel').classList.toggle('show');
+}
+
+// ══ DIGEST ══
+function getSession() {
+  const h = new Date().getHours();
+  return h < 12 ? 'Morning Digest' : h < 18 ? 'Afternoon Digest' : 'Evening Digest';
+}
+
+function digestIsStale() {
+  return (Date.now() - S.digestTime) > 6 * 60 * 60 * 1000;
+}
+
+function renderDigest() {
+  document.getElementById('digestSessionLabel').textContent = getSession();
+  const ts = document.getElementById('digestTimestamp');
+  if (S.digestTime) {
+    const d = new Date(S.digestTime);
+    ts.textContent = 'Updated ' + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  }
+  loadDigest(false);
+}
+
+async function loadDigest(force) {
+  if (!S.workerUrl || !S.apiKey) {
+    document.getElementById('digestLoading').classList.remove('show');
+    document.getElementById('digestSetupMsg').classList.add('show');
+    document.getElementById('digestList').innerHTML = '';
+    document.getElementById('digestEnd').classList.remove('show');
+    return;
+  }
+  document.getElementById('digestSetupMsg').classList.remove('show');
+  if (!force && S.digest && !digestIsStale()) {
+    renderDigestItems(S.digest);
+    return;
+  }
+  document.getElementById('digestLoading').classList.add('show');
+  document.getElementById('digestList').innerHTML = '';
+  document.getElementById('digestEnd').classList.remove('show');
+  try {
+    const res = await fetch(S.workerUrl + '/digest', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: S.apiKey, sources: S.sources, topics: S.topics, session: getSession() })
+    });
+    const data = await res.json();
+    S.digest = data.items || [];
+    S.digestTime = Date.now();
+    save('pt_digest', S.digest);
+    save('pt_digest_time', S.digestTime);
+    renderDigestItems(S.digest);
+  } catch {
+    showToast('Could not load digest. Check your Worker URL.');
+    document.getElementById('digestLoading').classList.remove('show');
+  }
+}
+
+function renderDigestItems(items) {
+  document.getElementById('digestLoading').classList.remove('show');
+  const list = document.getElementById('digestList');
+  list.innerHTML = '';
+  if (!items || items.length === 0) {
+    list.innerHTML = '<p style="text-align:center;padding:48px 24px;color:var(--text-mid);font-size:14px">Nothing notable today.</p>';
+    return;
+  }
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'digest-item';
+    el.innerHTML =
+      '<div class="digest-item-source">' + esc(item.source || '') + '</div>' +
+      '<div class="digest-item-headline">' + esc(item.headline || '') + '</div>' +
+      (item.summary ? '<div class="digest-item-summary">' + esc(item.summary) + '</div>' : '');
+    if (item.url) el.onclick = () => window.open(item.url, '_blank');
+    list.appendChild(el);
+  });
+  document.getElementById('digestEnd').classList.add('show');
+}
+
+// ══ RESEARCH ══
+function renderResearch() {
+  const list  = document.getElementById('researchList');
+  const count = document.getElementById('researchCount');
+  const items = S.research;
+  count.textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
+  list.innerHTML = '';
+  if (items.length === 0) {
+    list.innerHTML = '<p style="text-align:center;padding:48px 24px;color:var(--text-mid);font-size:14px">Nothing yet.</p>';
+    return;
+  }
+  items.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'research-card' + (item.changed ? ' changed' : '');
+    let linksHtml = '';
+    if (item.links && item.links.length) {
+      linksHtml =
+        '<button class="research-check-btn" onclick="checkLinks(' + idx + ');event.stopPropagation()">&#8635; Check</button>' +
+        item.links.map(l => '<a class="research-link-btn" href="' + esc(l) + '" target="_blank" onclick="event.stopPropagation()">View &rarr;</a>').join('');
+    }
+    card.innerHTML =
+      '<div class="research-card-top">' +
+        '<div class="research-card-name">' + esc(item.name) + '</div>' +
+        '<div class="research-changed-dot"></div>' +
+        '<button class="research-delete-btn" onclick="deleteResearch(' + idx + ');event.stopPropagation()">&#215;</button>' +
+      '</div>' +
+      (item.notes ? '<div class="research-card-notes">' + esc(item.notes) + '</div>' : '') +
+      '<div class="research-card-meta">' +
+        (item.price ? '<span class="research-price">' + esc(item.price) + '</span>' : '') +
+        linksHtml +
+      '</div>' +
+      (item.changed ? '<div class="research-changed-note">Something changed since your last check</div>' : '');
+    list.appendChild(card);
+  });
+}
+
+function toggleAddForm() {
+  const form = document.getElementById('addResearchForm');
+  const isOpen = form.classList.toggle('show');
+  if (isOpen) {
+    ['newItemName','newItemNotes','newItemPrice'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('linkFields').innerHTML =
+      '<div class="link-row"><input type="url" placeholder="https://\u2026" class="link-input"><button class="remove-link-btn" onclick="removeLinkField(this)">&#215;</button></div>';
+    document.getElementById('newItemName').focus();
+  }
+}
+
+function addLinkField() {
+  const row = document.createElement('div');
+  row.className = 'link-row';
+  row.innerHTML = '<input type="url" placeholder="https://\u2026" class="link-input"><button class="remove-link-btn" onclick="removeLinkField(this)">&#215;</button>';
+  document.getElementById('linkFields').appendChild(row);
+}
+
+function removeLinkField(btn) {
+  const rows = document.querySelectorAll('#linkFields .link-row');
+  if (rows.length > 1) btn.closest('.link-row').remove();
+}
+
+function saveResearchItem() {
+  const name = document.getElementById('newItemName').value.trim();
+  if (!name) { showToast('Give it a name first'); return; }
+  const links = Array.from(document.querySelectorAll('#linkFields .link-input')).map(i => i.value.trim()).filter(Boolean);
+  S.research.unshift({ id: Date.now(), name, notes: document.getElementById('newItemNotes').value.trim(), price: document.getElementById('newItemPrice').value.trim(), links, changed: false });
+  save('pt_research', S.research);
+  toggleAddForm();
+  renderResearch();
+}
+
+function deleteResearch(idx) {
+  if (!confirm('Remove "' + S.research[idx].name + '"?')) return;
+  S.research.splice(idx, 1);
+  save('pt_research', S.research);
+  renderResearch();
+}
+
+async function checkLinks(idx) {
+  const item = S.research[idx];
+  if (!item.links || !item.links.length) return;
+  if (!S.workerUrl) { showToast('Add Worker URL in Settings first'); return; }
+  showToast('Checking\u2026');
+  try {
+    const res = await fetch(S.workerUrl + '/check-pages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: item.id, urls: item.links })
+    });
+    const data = await res.json();
+    S.research[idx].changed = data.changed || false;
+    save('pt_research', S.research);
+    renderResearch();
+    showToast(data.changed ? 'Something changed' : 'No changes');
+  } catch { showToast('Check failed'); }
+}
+
+// ══ SETTINGS ══
+function renderSettings() {
+  renderChipList('topicsChipList',   S.topics,    'pt_topics',    1);
+  renderChipList('sourcesChipList',  S.sources,   'pt_sources',   1);
+  renderChipList('questionsChipList',S.questions, 'pt_questions', 1);
+  document.getElementById('workerUrlInput').value = S.workerUrl;
+  document.getElementById('apiKeyInput').value    = S.apiKey;
+}
+
+function renderChipList(containerId, arr, storeKey, minLen) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  arr.forEach((item, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.innerHTML = '<span>' + esc(item) + '</span>' +
+      '<button class="chip-remove" onclick="removeChip(\'' + storeKey + '\',' + i + ',' + minLen + ')">&#215;</button>';
+    el.appendChild(chip);
+  });
+}
+
+function removeChip(key, idx, minLen) {
+  const map = { pt_topics: 'topics', pt_sources: 'sources', pt_questions: 'questions' };
+  const prop = map[key];
+  if (S[prop].length <= minLen) { showToast('Keep at least one'); return; }
+  S[prop].splice(idx, 1);
+  save(key, S[prop]);
+  renderSettings();
+}
+
+function addTopic() {
+  const v = document.getElementById('newTopicInput').value.trim();
+  if (!v) return;
+  S.topics.push(v); save('pt_topics', S.topics);
+  document.getElementById('newTopicInput').value = '';
+  renderSettings();
+}
+function addSource() {
+  const v = document.getElementById('newSourceInput').value.trim();
+  if (!v) return;
+  S.sources.push(v); save('pt_sources', S.sources);
+  document.getElementById('newSourceInput').value = '';
+  renderSettings();
+}
+function addQuestion() {
+  const v = document.getElementById('newQuestionInput').value.trim();
+  if (!v) return;
+  S.questions.push(v); save('pt_questions', S.questions);
+  document.getElementById('newQuestionInput').value = '';
+  renderSettings();
+}
+
+function saveConfig() {
+  S.workerUrl = document.getElementById('workerUrlInput').value.trim().replace(/\/$/, '');
+  S.apiKey    = document.getElementById('apiKeyInput').value.trim();
+  save('pt_worker_url', S.workerUrl);
+  save('pt_api_key',    S.apiKey);
+  showToast('Saved');
+}
+
+function clearDigestCache() {
+  S.digest = null; S.digestTime = 0;
+  save('pt_digest', null); save('pt_digest_time', 0);
+  showToast('Cache cleared');
+}
+
+function clearData() {
+  if (!confirm('Reset all research items and digest cache?')) return;
+  S.research = []; S.digest = null; S.digestTime = 0;
+  save('pt_research', []); save('pt_digest', null); save('pt_digest_time', 0);
+  showToast('Reset');
+}
+
+// ══ UTILS ══
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ══ BOOT ══
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(() => {});
+initInterrupt();
+</script>
+</body>
+</html>
