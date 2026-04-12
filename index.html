@@ -208,11 +208,17 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
 .thursday-badge.show { display: inline-block; }
 
 .interrupt-pause {
-  font-size: 52px;
-  color: var(--celery);
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin-bottom: 28px;
-  letter-spacing: -4px;
+}
+.interrupt-pause .pause-bar {
+  width: 10px;
+  height: 48px;
+  background: var(--celery);
+  border-radius: 4px;
 }
 
 .interrupt-question {
@@ -300,17 +306,22 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
 }
 
 .cycle-btn {
-  background: none;
-  border: none;
-  font-size: 22px;
-  color: rgba(238,251,213,0.55);
+  background: rgba(238,251,213,0.15);
+  border: 2px solid rgba(238,251,213,0.3);
+  border-radius: 50%;
+  font-size: 32px;
+  color: rgba(238,251,213,0.7);
   cursor: pointer;
-  padding: 8px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
-  transition: color 0.15s;
-  margin-top: 4px;
+  transition: all 0.15s;
+  margin-top: 16px;
 }
-.cycle-btn:hover { color: var(--celery); }
+.cycle-btn:hover { color: var(--celery); background: rgba(238,251,213,0.25); border-color: rgba(238,251,213,0.5); }
 
 /* Thursday mode — stronger interrupt */
 .thursday-wrap {
@@ -318,7 +329,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
 }
 .thursday-wrap .interrupt-pause { color: var(--teal-light); }
 .thursday-wrap .interrupt-question { color: var(--celery); }
-.thursday-wrap .cycle-btn { color: rgba(238,251,213,0.3); }
+.thursday-wrap .cycle-btn { color: rgba(238,251,213,0.3); background: rgba(238,251,213,0.08); border-color: rgba(238,251,213,0.15); }
 
 /* ── SCREEN 2: DIGEST ── */
 #screen-digest { background: var(--white); }
@@ -834,7 +845,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   <div id="screen-interrupt" class="screen active">
     <div class="interrupt-wrap" id="interruptWrap">
       <div class="thursday-badge" id="thursdayBadge">it&rsquo;s thursday</div>
-      <div class="interrupt-pause">&#8741;</div>
+      <div class="interrupt-pause"><div class="pause-bar"></div><div class="pause-bar"></div></div>
       <div class="interrupt-question" id="interruptQuestion">
         you can look &mdash; but first let&rsquo;s check in. what do you really need right now?
       </div>
@@ -846,14 +857,14 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
           <div id="reflectionList"></div>
         </div>
         <div class="alternatives-panel" id="altPanel">
-          <a class="alt-btn" href="sms:">
-            <span class="alt-symbol">&#9993;</span> Text someone
+          <a class="alt-btn" href="sms:" onclick="event.preventDefault(); window.location='sms:';">
+            <span class="alt-symbol"><svg width="20" height="16" viewBox="0 0 20 16" fill="none"><rect x="1" y="1" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M1 3l9 5.5L19 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Text someone
           </a>
-          <a class="alt-btn" href="youversion://bible" onclick="setTimeout(function(){window.location='https://apps.apple.com/app/bible/id282935706'},500)">
-            <span class="alt-symbol">&#10013;</span> Bible
+          <a class="alt-btn" href="youversion://bible" onclick="event.preventDefault(); var w=window.open('youversion://bible','_self'); setTimeout(function(){ window.location='https://www.bible.com'; },800);">
+            <span class="alt-symbol"><svg width="16" height="20" viewBox="0 0 16 20" fill="none"><line x1="8" y1="3" x2="8" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="2" y1="10" x2="14" y2="10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span> Bible
           </a>
           <a class="alt-btn" href="https://pca.st/podcast/ec4c2810-1fb1-0136-c266-7d73a919276a" target="_blank">
-            <span class="alt-symbol">&#9676;</span> Rush podcast
+            <span class="alt-symbol"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 1C5 1 2 4.5 2 8c0 2.5 1.2 4 2.5 5.5L7 18c.5 1 1.5 1.5 3 1.5s2.5-.5 3-1.5l2.5-4.5C16.8 12 18 10.5 18 8c0-3.5-3-7-8-7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7.5 7c0-1.4 1.1-2.5 2.5-2.5S12.5 5.6 12.5 7 11.4 9.5 10 9.5 7.5 8.4 7.5 7z" stroke="currentColor" stroke-width="1.4"/><line x1="10" y1="10" x2="10" y2="13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span> Rush Podcast
           </a>
         </div>
         <button class="cycle-btn" onclick="cycleQuestion()" title="Different question">&#10227;</button>
@@ -1147,6 +1158,7 @@ let S = {
   fandomTime:    load('pt_fandom_time',    0),
   workerUrl:     load('pt_worker_url',     ''),
   apiKey:        load('pt_api_key',        ''),
+  rotationSlot:  load('pt_rotation_slot',  0),
   qIdx:          0,
 };
 
@@ -1237,14 +1249,16 @@ function toggleAlternatives() {
 }
 
 // ══ DIGEST ══
+const SLOT_NAMES = ['Gossip + Music', 'Film + Comedy', 'LA + Fashion', 'Industry + Writers'];
 function getSession() { return 'Digest'; }
+function getSlotLabel() { return SLOT_NAMES[S.rotationSlot] || SLOT_NAMES[0]; }
 
 function digestIsStale() {
   return (Date.now() - S.digestTime) > 6 * 60 * 60 * 1000;
 }
 
 function renderDigest() {
-  document.getElementById('digestSessionLabel').textContent = getSession();
+  document.getElementById('digestSessionLabel').textContent = getSlotLabel();
   updateDigestTimestamp();
   renderFandom(S.fandom);
   loadDigest(false);
@@ -1288,7 +1302,7 @@ async function loadDigest(force) {
     const res = await fetch(S.workerUrl + '/digest', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: S.apiKey, sources: S.sources, topics: S.topics, session: getSession() })
+      body: JSON.stringify({ api_key: S.apiKey, sources: S.sources, topics: S.topics, session: getSession(), rotation_slot: S.rotationSlot })
     });
     const data = await res.json();
     if (!res.ok || data.error) {
@@ -1306,6 +1320,9 @@ async function loadDigest(force) {
     S.digestTime = Date.now();
     save('pt_digest', S.digest);
     save('pt_digest_time', S.digestTime);
+    // Advance rotation slot for next refresh (0-3 cycle)
+    S.rotationSlot = (S.rotationSlot + 1) % 4;
+    save('pt_rotation_slot', S.rotationSlot);
     updateDigestTimestamp();
     renderDigestItems(S.digest);
     // News done — now kick off fandom. Small buffer to let the rate-limit
@@ -1320,12 +1337,14 @@ async function loadDigest(force) {
 function showDigestError(code, detail) {
   document.getElementById('digestLoading').classList.remove('show');
   const box = document.getElementById('digestError');
+  const isRateLimit = detail && detail.includes('rate_limit');
   box.querySelector('.digest-error-detail').textContent =
+    isRateLimit ? 'Rate limit hit — wait 2 minutes before trying again.' :
     (code === 'network' ? 'Could not reach the Worker.' :
      code === 'anthropic_error' ? 'Anthropic rejected the request.' :
      code === 'no_rss' ? 'None of your RSS feeds responded.' :
      code === 'parse_error' ? 'The AI response could not be parsed.' :
-     'Something went wrong.') + (detail ? ' (' + detail + ')' : '');
+     'Something went wrong.') + (!isRateLimit && detail ? ' (' + detail + ')' : '');
   box.classList.add('show');
 }
 
