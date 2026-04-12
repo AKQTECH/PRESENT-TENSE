@@ -999,6 +999,14 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     </div>
 
     <div class="settings-section">
+      <div class="settings-section-title">X Journal</div>
+      <div class="settings-card">
+        <div id="xJournalList" style="font-size:13px;color:var(--teal-dark);"></div>
+        <div id="xJournalEmpty" style="font-size:13px;color:var(--text-mid);padding:8px 0;">No entries yet.</div>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <div class="settings-section-title">Backend</div>
       <div class="settings-card">
         <div class="config-input-wrap">
@@ -1281,13 +1289,12 @@ async function loadDigest(force) {
     const data = await res.json();
     if (!res.ok || data.error) {
       showDigestError(data.error || ('HTTP ' + res.status), data.detail || data.message);
-      // Still try fandom even if news failed — they use different token budgets
-      loadFandom(force);
+      // Don't fire fandom immediately — it'll hit the same rate limit.
+      // Fandom will load on next successful digest refresh.
       return;
     }
     if (!Array.isArray(data.items)) {
       showDigestError('parse_error', 'Response had no items array.');
-      loadFandom(force);
       return;
     }
     S.digest = data.items;
@@ -1296,12 +1303,11 @@ async function loadDigest(force) {
     save('pt_digest_time', S.digestTime);
     updateDigestTimestamp();
     renderDigestItems(S.digest);
-    // News done — now kick off fandom. Small buffer to let the rate-limit
-    // window breathe between the news call and the first fandom call.
-    setTimeout(() => loadFandom(force), 5000);
+    // News done — now kick off fandom. 90s buffer so the per-minute
+    // rate limit window resets before the fandom call fires.
+    setTimeout(() => loadFandom(force), 90000);
   } catch (e) {
     showDigestError('network', e.message || 'Could not reach the Worker.');
-    loadFandom(force);
   }
 }
 
@@ -1574,6 +1580,28 @@ function renderSettings() {
   renderChipList('questionsChipList',    S.questions,    'pt_questions',     1);
   document.getElementById('workerUrlInput').value = S.workerUrl;
   document.getElementById('apiKeyInput').value    = S.apiKey;
+  renderXJournal();
+}
+
+function renderXJournal() {
+  const entries = load('pt_x_feelings', []);
+  const list = document.getElementById('xJournalList');
+  const empty = document.getElementById('xJournalEmpty');
+  list.innerHTML = '';
+  if (!entries.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  // Show newest first
+  entries.slice().reverse().forEach(e => {
+    const d = new Date(e.time);
+    const month = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    const row = document.createElement('div');
+    row.style.cssText = 'padding:10px 0;border-bottom:1px solid var(--border);';
+    row.innerHTML =
+      '<div style="font-size:11px;color:var(--text-mid);margin-bottom:4px;">' + esc(month + ' at ' + time) + '</div>' +
+      '<div style="line-height:1.45;">' + esc(e.text) + '</div>';
+    list.appendChild(row);
+  });
 }
 
 function renderChipList(containerId, arr, storeKey, minLen) {
