@@ -451,7 +451,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   color: var(--teal-mid);
 }
 .fandom-box.loading .fandom-box-label::after {
-  content: ' \u2022\u2022\u2022';
+  content: ' \2022\2022\2022';
 }
 .fandom-status {
   font-size: 12px;
@@ -992,7 +992,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <div class="settings-card">
         <div class="chip-list" id="sourcesChipList"></div>
         <div class="chip-add-row">
-          <input type="url" id="newSourceInput" placeholder="https://deadline.com/feed/" onkeydown="if(event.key==='Enter')addSource()">
+          <input type="url" id="newSourceInput" placeholder="https://www.reddit.com/r/subreddit/.rss" onkeydown="if(event.key==='Enter')addSource()">
           <button class="chip-add-btn" onclick="addSource()">Add</button>
         </div>
       </div>
@@ -1118,8 +1118,7 @@ const DEFAULT_SOURCES = [
   "https://www.reddit.com/r/LAhotgirlies/.rss",
   "https://www.reddit.com/r/culvercity/.rss",
   "https://www.reddit.com/r/AskWomenOver30/.rss",
-  "https://www.reddit.com/r/moviecritic/.rss",
-  "https://variety.com/feed/"
+  "https://www.reddit.com/r/moviecritic/.rss"
 ];
 
 const DEFAULT_QUESTIONS = [
@@ -1158,7 +1157,6 @@ let S = {
   fandomTime:    load('pt_fandom_time',    0),
   workerUrl:     load('pt_worker_url',     ''),
   apiKey:        load('pt_api_key',        ''),
-  rotationSlot:  load('pt_rotation_slot',  0),
   qIdx:          0,
 };
 
@@ -1249,9 +1247,8 @@ function toggleAlternatives() {
 }
 
 // ══ DIGEST ══
-const SLOT_NAMES = ['Gossip + Music', 'Film + Comedy', 'LA + Fashion', 'Industry + Writers'];
 function getSession() { return 'Digest'; }
-function getSlotLabel() { return SLOT_NAMES[S.rotationSlot] || SLOT_NAMES[0]; }
+function getSlotLabel() { return 'Digest'; }
 
 function digestIsStale() {
   return (Date.now() - S.digestTime) > 6 * 60 * 60 * 1000;
@@ -1302,7 +1299,7 @@ async function loadDigest(force) {
     const res = await fetch(S.workerUrl + '/digest', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: S.apiKey, sources: S.sources, topics: S.topics, session: getSession(), rotation_slot: S.rotationSlot })
+      body: JSON.stringify({ api_key: S.apiKey, sources: S.sources, topics: S.topics, session: getSession() })
     });
     const data = await res.json();
     if (!res.ok || data.error) {
@@ -1320,9 +1317,6 @@ async function loadDigest(force) {
     S.digestTime = Date.now();
     save('pt_digest', S.digest);
     save('pt_digest_time', S.digestTime);
-    // Advance rotation slot for next refresh (0-3 cycle)
-    S.rotationSlot = (S.rotationSlot + 1) % 4;
-    save('pt_rotation_slot', S.rotationSlot);
     updateDigestTimestamp();
     renderDigestItems(S.digest);
     // News done — now kick off fandom. Small buffer to let the rate-limit
