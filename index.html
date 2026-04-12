@@ -1107,19 +1107,7 @@ const DEFAULT_TOPICS = [
   "LA Film Festivals","LACMA","LA Public Library"
 ];
 
-const DEFAULT_SOURCES = [
-  "https://popcrave.com/feed",
-  "https://www.reddit.com/r/Fauxmoi/.rss",
-  "https://www.reddit.com/r/popculturechat/.rss",
-  "https://www.reddit.com/r/popheads/.rss",
-  "https://www.reddit.com/r/BlackPeopleTwitter/.rss",
-  "https://www.reddit.com/r/Letterboxd/.rss",
-  "https://www.reddit.com/r/AskLosAngeles/.rss",
-  "https://www.reddit.com/r/LAhotgirlies/.rss",
-  "https://www.reddit.com/r/culvercity/.rss",
-  "https://www.reddit.com/r/AskWomenOver30/.rss",
-  "https://www.reddit.com/r/moviecritic/.rss"
-];
+const DEFAULT_SOURCES = [];
 
 const DEFAULT_QUESTIONS = [
   "you can look \u2014 but first let\u2019s check in. what do you really need right now?",
@@ -1299,7 +1287,7 @@ async function loadDigest(force) {
     const res = await fetch(S.workerUrl + '/digest', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: S.apiKey, sources: S.sources, topics: S.topics, session: getSession() })
+      body: JSON.stringify({ api_key: S.apiKey })
     });
     const data = await res.json();
     if (!res.ok || data.error) {
