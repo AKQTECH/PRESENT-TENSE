@@ -417,65 +417,6 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   line-height: 1.55;
 }
 
-/* Friends block */
-.friends-box {
-  display: none;
-  background: var(--celery);
-  margin: 14px 16px 6px;
-  border-radius: 16px;
-  padding: 16px 18px 18px;
-}
-.friends-box-label {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--teal-mid);
-  margin-bottom: 10px;
-}
-.friends-list { display: flex; flex-direction: column; gap: 10px; }
-.friend-item {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 12px 14px;
-}
-.friend-name {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  margin-bottom: 6px;
-}
-.friend-update {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 10px;
-  margin-top: 6px;
-  border-radius: 8px;
-  background: var(--teal-light);
-  text-decoration: none;
-}
-.friend-update-label {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--teal-mid);
-}
-.friend-update-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  line-height: 1.3;
-}
-.friends-empty {
-  font-size: 13px;
-  color: var(--text-mid);
-  font-style: italic;
-  text-align: center;
-  padding: 8px 4px;
-}
-
 /* Fandom block */
 .fandom-box {
   display: none;
@@ -852,40 +793,6 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   cursor: pointer;
 }
 
-.friend-setting-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid rgba(1, 57, 74, 0.08);
-  gap: 12px;
-}
-.friend-setting-row:last-child { border-bottom: none; }
-.btn-small-remove {
-  background: transparent;
-  border: 1.5px solid var(--teal-mid);
-  color: var(--teal-dark);
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  cursor: pointer;
-}
-.btn-small-remove:hover { background: var(--teal-light); }
-#addFriendForm {
-  display: none;
-  padding: 12px 16px;
-  background: rgba(238, 251, 213, 0.4);
-  border-top: 1px solid rgba(1, 57, 74, 0.08);
-}
-#addFriendForm input {
-  width: 100%;
-  font-size: 14px;
-  padding: 10px 12px;
-  margin-bottom: 8px;
-}
-
 .config-input-wrap {
   padding: 14px 16px;
 }
@@ -915,6 +822,8 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   white-space: nowrap;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+#xGateGoBtn:not(:disabled) { opacity: 1; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -932,15 +841,19 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <div class="interrupt-actions" id="interruptActions">
         <button class="btn-open-x" onclick="openX()">Open X &rarr;</button>
         <button class="btn-something-else" onclick="toggleAlternatives()">something else</button>
+        <div id="sundayReflection" style="display:none;margin-top:28px;background:var(--celery);border-radius:16px;padding:20px 18px;text-align:left;width:100%;max-width:320px;">
+          <div style="font-size:10px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--teal-mid);margin-bottom:8px;">This week, before X you said:</div>
+          <div id="reflectionList"></div>
+        </div>
         <div class="alternatives-panel" id="altPanel">
           <a class="alt-btn" href="sms:">
             <span class="alt-symbol">&#9993;</span> Text someone
           </a>
-          <a class="alt-btn" href="https://www.youversion.com/the-bible-app/" target="_blank">
+          <a class="alt-btn" href="youversion://bible" onclick="setTimeout(function(){window.location='https://apps.apple.com/app/bible/id282935706'},500)">
             <span class="alt-symbol">&#10013;</span> Bible
           </a>
-          <a class="alt-btn" href="https://soultime.com" target="_blank">
-            <span class="alt-symbol">&#9675;</span> Soultime
+          <a class="alt-btn" href="https://pca.st/podcast/ec4c2810-1fb1-0136-c266-7d73a919276a" target="_blank">
+            <span class="alt-symbol">&#9676;</span> Rush podcast
           </a>
         </div>
         <button class="cycle-btn" onclick="cycleQuestion()" title="Different question">&#10227;</button>
@@ -951,8 +864,8 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   <!-- ══ SCREEN 2: DIGEST ══ -->
   <div id="screen-digest" class="screen">
     <div class="screen-header">
-      <div class="screen-label" id="digestSessionLabel">Morning Digest</div>
-      <div class="screen-title">What&rsquo;s happening.</div>
+      <div class="screen-label" id="digestSessionLabel">Digest</div>
+      <div class="screen-title" style="color:var(--celery)">What the Streets are Saying.</div>
     </div>
 
     <div class="digest-controls">
@@ -977,16 +890,10 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <button class="btn-secondary" style="margin-top:10px;max-width:200px;margin-left:auto;margin-right:auto" onclick="loadDigest(true)">Try again</button>
     </div>
 
-    <!-- FRIENDS -->
-    <div class="friends-box" id="friendsBox">
-      <div class="friends-box-label">From your people</div>
-      <div class="friends-list" id="friendsList"></div>
-    </div>
-
     <!-- FANDOM INTERPRETATION -->
     <div class="fandom-box" id="fandomBox">
       <div class="fandom-box-header">
-        <div class="fandom-box-label">Fandom read</div>
+        <div class="fandom-box-label">Fandom Read</div>
       </div>
       <div class="fandom-status"></div>
       <div class="fandom-list" id="fandomList"></div>
@@ -1055,45 +962,6 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">Fandom Topics &mdash; deep read</div>
-      <div class="settings-card">
-        <div style="padding:12px 16px 4px;font-size:12px;color:var(--text-mid);line-height:1.5">
-          These get a full web-search interpretation of current discourse. Keep to 4&ndash;6 for speed/cost.
-        </div>
-        <div class="chip-list" id="fandomTopicsChipList"></div>
-        <div class="chip-add-row">
-          <input type="text" id="newFandomTopicInput" placeholder="e.g. Heated Rivalry" onkeydown="if(event.key==='Enter')addFandomTopic()">
-          <button class="chip-add-btn" onclick="addFandomTopic()">Add</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <div class="settings-section-title">Friends</div>
-      <div class="settings-card">
-        <div style="padding:12px 16px 4px;font-size:12px;color:var(--text-mid);line-height:1.5">
-          Add anyone whose posts you want to catch without scrolling. Substack is checked via RSS. Instagram is best-effort &mdash; paste the profile URL or @handle.
-        </div>
-        <div id="friendsSettingsList" style="padding:8px 16px 4px"></div>
-        <div class="add-friend-form" id="addFriendForm" style="display:none;padding:12px 16px;background:var(--teal-light);border-radius:12px;margin:8px 16px">
-          <div class="form-row"><label class="form-label">Name</label>
-            <input type="text" id="newFriendName" placeholder="Their name"></div>
-          <div class="form-row"><label class="form-label">Substack (optional)</label>
-            <input type="url" id="newFriendSubstack" placeholder="https://theirname.substack.com"></div>
-          <div class="form-row"><label class="form-label">Instagram handle or URL (optional)</label>
-            <input type="text" id="newFriendIG" placeholder="@theirhandle"></div>
-          <div class="form-actions">
-            <button class="btn-secondary" onclick="toggleAddFriend()">Cancel</button>
-            <button class="btn-primary" onclick="saveFriend()">Save</button>
-          </div>
-        </div>
-        <div style="padding:8px 16px 14px">
-          <button class="btn-ghost" onclick="toggleAddFriend()">+ Add friend</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="settings-section">
       <div class="settings-section-title">Interest Topics</div>
       <div class="settings-card">
         <div class="chip-list" id="topicsChipList"></div>
@@ -1144,7 +1012,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <div class="settings-card">
         <div class="settings-row">
           <div>
-            <div class="settings-row-label">Present Tense v1</div>
+            <div class="settings-row-label">Present Tense v2</div>
             <div class="settings-row-sub">Built for April Korto Quioh</div>
           </div>
         </div>
@@ -1166,6 +1034,17 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     </div>
 
     <div style="height:24px"></div>
+  </div>
+
+  <!-- X GATE OVERLAY -->
+  <div id="xGateOverlay" style="display:none;position:fixed;inset:0;z-index:200;background:var(--teal-dark);flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;text-align:center;">
+    <div style="font-size:15px;font-weight:800;color:var(--celery);line-height:1.55;max-width:300px;margin-bottom:24px;">
+      Okay, but first, answer this &mdash;<br><br>
+      I am opening X because I&rsquo;m feeling ______.
+    </div>
+    <textarea id="xGateInput" oninput="xGateInput()" rows="3" placeholder="tell yourself the truth&hellip;" style="width:100%;max-width:300px;font-family:'DM Sans',sans-serif;font-size:15px;border:2px solid var(--teal-mid);border-radius:12px;padding:14px;color:var(--teal-dark);background:var(--celery);resize:none;"></textarea>
+    <button id="xGateGoBtn" onclick="xGateSubmit()" disabled style="margin-top:16px;width:100%;max-width:300px;background:var(--celery);color:var(--teal-dark);border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:800;cursor:not-allowed;opacity:0.4;transition:all 0.15s;">Open X &rarr;</button>
+    <button onclick="xGateCancel()" style="margin-top:12px;background:none;border:none;color:var(--teal-mid);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:800;cursor:pointer;">never mind</button>
   </div>
 
   <!-- BOTTOM NAV -->
@@ -1214,10 +1093,7 @@ const DEFAULT_TOPICS = [
 ];
 
 const DEFAULT_SOURCES = [
-  "https://deadline.com/feed/",
-  "https://variety.com/feed/",
-  "https://www.indiewire.com/feed/",
-  "https://www.thewrap.com/feed/"
+  "https://popcrave.com/feed"
 ];
 
 const DEFAULT_QUESTIONS = [
@@ -1233,14 +1109,7 @@ const DEFAULT_QUESTIONS = [
   "quick check: are you okay?"
 ];
 
-const DEFAULT_FANDOM_TOPICS = [
-  "Heated Rivalry",
-  "Hudson Williams",
-  "Connor Storrie",
-  "Hudcon"
-];
-
-const DEFAULT_FRIENDS = [];
+const DEFAULT_FANDOM_TOPICS = ["Hudcon"];
 
 const THURSDAY_Q = "what will make you feel better right now \u2014 a few minutes on X, or a check in with a friend?";
 
@@ -1254,16 +1123,13 @@ function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 let S = {
   topics:        load('pt_topics',         DEFAULT_TOPICS),
   fandomTopics:  load('pt_fandom_topics',  DEFAULT_FANDOM_TOPICS),
-  friends:       load('pt_friends',        DEFAULT_FRIENDS),
   sources:       load('pt_sources',        DEFAULT_SOURCES),
   questions:     load('pt_questions',      DEFAULT_QUESTIONS),
   research:      load('pt_research',       []),
   digest:        load('pt_digest',         null),
   fandom:        load('pt_fandom',         null),
-  friendsData:   load('pt_friends_data',   null),
   digestTime:    load('pt_digest_time',    0),
   fandomTime:    load('pt_fandom_time',    0),
-  friendsTime:   load('pt_friends_time',   0),
   workerUrl:     load('pt_worker_url',     ''),
   apiKey:        load('pt_api_key',        ''),
   qIdx:          0,
@@ -1283,6 +1149,26 @@ function switchScreen(name) {
 // ══ INTERRUPT ══
 function isThursday() { return new Date().getDay() === 4; }
 
+function checkSundayReflection() {
+  if (new Date().getDay() !== 0) return; // not Sunday
+  const entries = load('pt_x_feelings', []);
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const thisWeek = entries.filter(e => e.time > weekAgo);
+  if (!thisWeek.length) return;
+  const reflectEl = document.getElementById('sundayReflection');
+  const listEl = document.getElementById('reflectionList');
+  listEl.innerHTML = thisWeek.map(e => {
+    const d = new Date(e.time);
+    const day = d.toLocaleDateString([], {weekday:'short'});
+    const time = d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+    return '<div style="padding:10px 0;border-bottom:1px solid rgba(1,57,74,0.08)">' +
+      '<div style="font-size:11px;color:var(--teal-mid);font-weight:800;letter-spacing:0.1em;text-transform:uppercase">' + day + ' ' + time + '</div>' +
+      '<div style="font-size:14px;color:var(--teal-dark);margin-top:4px">' + esc(e.text) + '</div>' +
+    '</div>';
+  }).join('');
+  reflectEl.style.display = 'block';
+}
+
 function initInterrupt() {
   const badge = document.getElementById('thursdayBadge');
   const wrap  = document.getElementById('interruptWrap');
@@ -1295,6 +1181,7 @@ function initInterrupt() {
     S.qIdx = Math.floor(Math.random() * S.questions.length);
     qEl.textContent = S.questions[S.qIdx];
   }
+  checkSundayReflection();
 }
 
 function cycleQuestion() {
@@ -1304,17 +1191,38 @@ function cycleQuestion() {
   document.getElementById('altPanel').classList.remove('show');
 }
 
-function openX() { window.open('https://x.com', '_blank'); }
+function openX() {
+  document.getElementById('xGateOverlay').style.display = 'flex';
+  document.getElementById('xGateInput').value = '';
+  document.getElementById('xGateInput').focus();
+  document.getElementById('xGateGoBtn').disabled = true;
+}
+function xGateInput() {
+  const v = document.getElementById('xGateInput').value.trim();
+  document.getElementById('xGateGoBtn').disabled = !v;
+}
+function xGateSubmit() {
+  const v = document.getElementById('xGateInput').value.trim();
+  if (!v) return;
+  // Save the feeling entry with timestamp
+  const entries = load('pt_x_feelings', []);
+  entries.push({ text: v, time: Date.now() });
+  save('pt_x_feelings', entries);
+  document.getElementById('xGateInput').value = '';
+  document.getElementById('xGateGoBtn').disabled = true;
+  document.getElementById('xGateOverlay').style.display = 'none';
+  window.open('https://x.com', '_blank');
+}
+function xGateCancel() {
+  document.getElementById('xGateOverlay').style.display = 'none';
+}
 
 function toggleAlternatives() {
   document.getElementById('altPanel').classList.toggle('show');
 }
 
 // ══ DIGEST ══
-function getSession() {
-  const h = new Date().getHours();
-  return h < 12 ? 'Morning Digest' : h < 18 ? 'Afternoon Digest' : 'Evening Digest';
-}
+function getSession() { return 'Digest'; }
 
 function digestIsStale() {
   return (Date.now() - S.digestTime) > 6 * 60 * 60 * 1000;
@@ -1323,7 +1231,6 @@ function digestIsStale() {
 function renderDigest() {
   document.getElementById('digestSessionLabel').textContent = getSession();
   updateDigestTimestamp();
-  renderFriends(S.friendsData);
   renderFandom(S.fandom);
   loadDigest(false);
 }
@@ -1350,12 +1257,13 @@ async function loadDigest(force) {
   document.getElementById('digestSetupMsg').classList.remove('show');
   document.getElementById('digestError').classList.remove('show');
 
-  // Fire friends + fandom alongside digest (parallel, non-blocking)
-  loadFriends(force);
-  loadFandom(force);
+  // News digest (AI call) runs FIRST, then fandom (AI calls with web_search).
+  // Serialized to avoid colliding on the 50k input tokens/min rate limit.
 
   if (!force && S.digest && !digestIsStale()) {
     renderDigestItems(S.digest);
+    // Still kick off fandom after rendering cached news
+    loadFandom(force);
     return;
   }
   document.getElementById('digestLoading').classList.add('show');
@@ -1370,10 +1278,13 @@ async function loadDigest(force) {
     const data = await res.json();
     if (!res.ok || data.error) {
       showDigestError(data.error || ('HTTP ' + res.status), data.detail || data.message);
+      // Still try fandom even if news failed — they use different token budgets
+      loadFandom(force);
       return;
     }
     if (!Array.isArray(data.items)) {
       showDigestError('parse_error', 'Response had no items array.');
+      loadFandom(force);
       return;
     }
     S.digest = data.items;
@@ -1382,8 +1293,12 @@ async function loadDigest(force) {
     save('pt_digest_time', S.digestTime);
     updateDigestTimestamp();
     renderDigestItems(S.digest);
+    // News done — now kick off fandom. Small buffer to let the rate-limit
+    // window breathe between the news call and the first fandom call.
+    setTimeout(() => loadFandom(force), 5000);
   } catch (e) {
     showDigestError('network', e.message || 'Could not reach the Worker.');
+    loadFandom(force);
   }
 }
 
@@ -1429,38 +1344,38 @@ function fandomIsStale() {
 
 async function loadFandom(force) {
   if (!S.workerUrl || !S.apiKey) return;
-  if (!S.fandomTopics || !S.fandomTopics.length) { renderFandom([]); return; }
   if (!force && S.fandom && !fandomIsStale()) { renderFandom(S.fandom); return; }
   const box = document.getElementById('fandomBox');
   box.classList.add('loading');
-  box.querySelector('.fandom-status').textContent = 'reading the fandom so you don\u2019t have to\u2026';
+  box.style.display = 'block';
+  box.querySelector('.fandom-status').textContent = 'reading the fandom\u2026';
   try {
     const res = await fetch(S.workerUrl + '/fandom', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: S.apiKey, fandom_topics: S.fandomTopics })
+      body: JSON.stringify({ api_key: S.apiKey, topic: 'Hudcon' })
     });
     const data = await res.json();
-    if (!res.ok || data.error || !Array.isArray(data.fandom)) {
-      box.classList.remove('loading');
+    box.classList.remove('loading');
+    if (res.ok && !data.error && Array.isArray(data.fandom) && data.fandom.length) {
+      S.fandom = data.fandom;
+      S.fandomTime = Date.now();
+      save('pt_fandom', S.fandom);
+      save('pt_fandom_time', S.fandomTime);
+      renderFandom(S.fandom);
+    } else {
       box.querySelector('.fandom-status').textContent = 'couldn\u2019t pull fandom updates right now.';
-      return;
     }
-    S.fandom = data.fandom;
-    S.fandomTime = Date.now();
-    save('pt_fandom', S.fandom);
-    save('pt_fandom_time', S.fandomTime);
-    renderFandom(S.fandom);
   } catch {
     box.classList.remove('loading');
     box.querySelector('.fandom-status').textContent = 'couldn\u2019t pull fandom updates right now.';
   }
 }
 
-function renderFandom(fandom) {
+function renderFandom(fandom, partial) {
   const box = document.getElementById('fandomBox');
   const list = document.getElementById('fandomList');
-  box.classList.remove('loading');
+  if (!partial) box.classList.remove('loading');
   if (!fandom || fandom.length === 0) {
     if (!S.fandomTopics || !S.fandomTopics.length) {
       box.style.display = 'none';
@@ -1468,11 +1383,11 @@ function renderFandom(fandom) {
     }
     box.style.display = 'block';
     list.innerHTML = '';
-    box.querySelector('.fandom-status').textContent = 'no fandom read yet \u2014 tap refresh.';
+    if (!partial) box.querySelector('.fandom-status').textContent = 'no fandom read yet \u2014 tap refresh.';
     return;
   }
   box.style.display = 'block';
-  box.querySelector('.fandom-status').textContent = '';
+  if (!partial) box.querySelector('.fandom-status').textContent = '';
   list.innerHTML = '';
   fandom.forEach(f => {
     const el = document.createElement('div');
@@ -1504,72 +1419,6 @@ function cleanCitations(text) {
     .replace(/ {2,}/g, ' ')
     .replace(/\s+([.,;:!?])/g, '$1')
     .trim();
-}
-
-// ══ FRIENDS ══
-function friendsIsStale() {
-  return (Date.now() - S.friendsTime) > 2 * 60 * 60 * 1000;
-}
-
-async function loadFriends(force) {
-  if (!S.workerUrl) return;
-  if (!S.friends || !S.friends.length) { renderFriends([]); return; }
-  if (!force && S.friendsData && !friendsIsStale()) { renderFriends(S.friendsData); return; }
-  try {
-    const res = await fetch(S.workerUrl + '/friends-check', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ friends: S.friends })
-    });
-    const data = await res.json();
-    if (!res.ok || !Array.isArray(data.friends)) return;
-    S.friendsData = data.friends;
-    S.friendsTime = Date.now();
-    save('pt_friends_data', S.friendsData);
-    save('pt_friends_time', S.friendsTime);
-    renderFriends(S.friendsData);
-  } catch {}
-}
-
-function renderFriends(friendsData) {
-  const box = document.getElementById('friendsBox');
-  const list = document.getElementById('friendsList');
-  if (!S.friends || !S.friends.length) { box.style.display = 'none'; return; }
-  if (!friendsData || !friendsData.length) {
-    box.style.display = 'block';
-    list.innerHTML = '<p class="friends-empty">no updates yet \u2014 tap refresh.</p>';
-    return;
-  }
-  // Only show friends that have something new
-  const newOnes = friendsData.filter(f =>
-    (f.substack && f.substack.new) || (f.instagram && f.instagram.new)
-  );
-  if (!newOnes.length) {
-    box.style.display = 'block';
-    list.innerHTML = '<p class="friends-empty">all quiet. nothing new from your people.</p>';
-    return;
-  }
-  box.style.display = 'block';
-  list.innerHTML = '';
-  newOnes.forEach(f => {
-    const el = document.createElement('div');
-    el.className = 'friend-item';
-    let parts = '<div class="friend-name">' + esc(f.name || '') + '</div>';
-    if (f.substack && f.substack.new) {
-      parts += '<a class="friend-update substack" href="' + esc(f.substack.url) + '" target="_blank">' +
-               '<span class="friend-update-label">new substack</span>' +
-               '<span class="friend-update-title">' + esc(f.substack.title || '') + '</span>' +
-               '</a>';
-    }
-    if (f.instagram && f.instagram.new) {
-      parts += '<a class="friend-update ig" href="' + esc(f.instagram.url) + '" target="_blank">' +
-               '<span class="friend-update-label">new on instagram</span>' +
-               (f.instagram.preview ? '<span class="friend-update-title">' + esc(f.instagram.preview) + '</span>' : '') +
-               '</a>';
-    }
-    el.innerHTML = parts;
-    list.appendChild(el);
-  });
 }
 
 // ══ RESEARCH ══
@@ -1677,8 +1526,6 @@ function renderSettings() {
   renderChipList('topicsChipList',       S.topics,       'pt_topics',        1);
   renderChipList('sourcesChipList',      S.sources,      'pt_sources',       1);
   renderChipList('questionsChipList',    S.questions,    'pt_questions',     1);
-  renderChipList('fandomTopicsChipList', S.fandomTopics, 'pt_fandom_topics', 0);
-  renderFriendsSettings();
   document.getElementById('workerUrlInput').value = S.workerUrl;
   document.getElementById('apiKeyInput').value    = S.apiKey;
 }
@@ -1699,8 +1546,7 @@ function removeChip(key, idx, minLen) {
   const map = {
     pt_topics: 'topics',
     pt_sources: 'sources',
-    pt_questions: 'questions',
-    pt_fandom_topics: 'fandomTopics'
+    pt_questions: 'questions'
   };
   const prop = map[key];
   if (!prop) return;
@@ -1708,62 +1554,6 @@ function removeChip(key, idx, minLen) {
   S[prop].splice(idx, 1);
   save(key, S[prop]);
   renderSettings();
-}
-
-function addFandomTopic() {
-  const v = document.getElementById('newFandomTopicInput').value.trim();
-  if (!v) return;
-  S.fandomTopics.push(v); save('pt_fandom_topics', S.fandomTopics);
-  document.getElementById('newFandomTopicInput').value = '';
-  renderSettings();
-}
-
-function toggleAddFriend() {
-  const el = document.getElementById('addFriendForm');
-  el.style.display = el.style.display === 'block' ? 'none' : 'block';
-}
-
-function saveFriend() {
-  const name = document.getElementById('newFriendName').value.trim();
-  const sub  = document.getElementById('newFriendSubstack').value.trim();
-  const ig   = document.getElementById('newFriendIG').value.trim();
-  if (!name) { showToast('Name required'); return; }
-  if (!sub && !ig) { showToast('Add at least one link'); return; }
-  const id = 'f_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
-  S.friends.push({ id, name, substack: sub, instagram: ig });
-  save('pt_friends', S.friends);
-  document.getElementById('newFriendName').value = '';
-  document.getElementById('newFriendSubstack').value = '';
-  document.getElementById('newFriendIG').value = '';
-  document.getElementById('addFriendForm').style.display = 'none';
-  renderSettings();
-}
-
-function deleteFriend(id) {
-  const f = S.friends.find(x => x.id === id);
-  if (!f) return;
-  if (!confirm('Remove ' + f.name + '?')) return;
-  S.friends = S.friends.filter(x => x.id !== id);
-  save('pt_friends', S.friends);
-  renderSettings();
-}
-
-function renderFriendsSettings() {
-  const el = document.getElementById('friendsSettingsList');
-  if (!el) return;
-  if (!S.friends.length) {
-    el.innerHTML = '<div style="opacity:0.6;font-size:14px;padding:8px 0;">No friends yet. Add someone to get notified when they post.</div>';
-    return;
-  }
-  el.innerHTML = S.friends.map(f => {
-    const bits = [];
-    if (f.substack)  bits.push('Substack');
-    if (f.instagram) bits.push('IG');
-    return '<div class="friend-setting-row">' +
-      '<div><strong>' + esc(f.name) + '</strong><br><span style="font-size:12px;opacity:0.7;">' + bits.join(' + ') + '</span></div>' +
-      '<button class="btn-small-remove" onclick="deleteFriend(\'' + f.id + '\')">Remove</button>' +
-    '</div>';
-  }).join('');
 }
 
 function addTopic() {
