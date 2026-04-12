@@ -865,7 +865,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   <div id="screen-digest" class="screen">
     <div class="screen-header">
       <div class="screen-label" id="digestSessionLabel">Digest</div>
-      <div class="screen-title" style="color:var(--celery)">What the Streets are Saying.</div>
+      <div class="screen-title" style="color:var(--celery)">What the Streets Are Saying:</div>
     </div>
 
     <div class="digest-controls">
@@ -905,6 +905,10 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <div class="digest-end-mark">&#8211;&#8212;&#8211;</div>
       <h2>all caught up.</h2>
       <p>you did it. you&rsquo;re free.</p>
+      <button onclick="markDigestRead()" style="margin-top:16px;background:var(--teal-dark);color:var(--celery);border:none;border-radius:12px;width:48px;height:48px;font-size:22px;cursor:pointer;transition:opacity 0.15s;">&#10003;</button>
+    </div>
+    <div class="digest-cleared" id="digestCleared" style="display:none;text-align:center;padding:60px 24px;">
+      <p style="font-size:14px;color:var(--text-mid);" id="digestClearedMsg"></p>
     </div>
   </div>
 
@@ -1093,7 +1097,18 @@ const DEFAULT_TOPICS = [
 ];
 
 const DEFAULT_SOURCES = [
-  "https://popcrave.com/feed"
+  "https://popcrave.com/feed",
+  "https://www.reddit.com/r/Fauxmoi/.rss",
+  "https://www.reddit.com/r/popculturechat/.rss",
+  "https://www.reddit.com/r/popheads/.rss",
+  "https://www.reddit.com/r/BlackPeopleTwitter/.rss",
+  "https://www.reddit.com/r/Letterboxd/.rss",
+  "https://www.reddit.com/r/AskLosAngeles/.rss",
+  "https://www.reddit.com/r/LAhotgirlies/.rss",
+  "https://www.reddit.com/r/culvercity/.rss",
+  "https://www.reddit.com/r/AskWomenOver30/.rss",
+  "https://www.reddit.com/r/moviecritic/.rss",
+  "https://variety.com/feed/"
 ];
 
 const DEFAULT_QUESTIONS = [
@@ -1314,12 +1329,42 @@ function showDigestError(code, detail) {
   box.classList.add('show');
 }
 
+function markDigestRead() {
+  const now = Date.now();
+  save('pt_digest_read_time', now);
+  S.digest = [];
+  S.digestTime = 0;
+  save('pt_digest', null);
+  save('pt_digest_time', 0);
+  document.getElementById('digestList').innerHTML = '';
+  document.getElementById('digestEnd').classList.remove('show');
+  showDigestCleared(now);
+}
+
+function showDigestCleared(time) {
+  const d = new Date(time);
+  const h = d.getHours();
+  const ampm = h >= 12 ? 'pm' : 'am';
+  const hour = h % 12 || 12;
+  const min = String(d.getMinutes()).padStart(2, '0');
+  document.getElementById('digestClearedMsg').textContent =
+    'you last got caught up at ' + hour + '.' + min + ampm + '.';
+  document.getElementById('digestCleared').style.display = 'block';
+}
+
 function renderDigestItems(items) {
   document.getElementById('digestLoading').classList.remove('show');
+  document.getElementById('digestCleared').style.display = 'none';
   const list = document.getElementById('digestList');
   list.innerHTML = '';
   const end = document.getElementById('digestEnd');
   if (!items || items.length === 0) {
+    // Check if they already read it
+    const readTime = load('pt_digest_read_time', 0);
+    if (readTime) {
+      showDigestCleared(readTime);
+      return;
+    }
     list.innerHTML = '<p style="text-align:center;padding:48px 24px;color:var(--text-mid);font-size:14px">Nothing notable today.</p>';
     end.classList.add('show');
     return;
