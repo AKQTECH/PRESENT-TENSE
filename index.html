@@ -988,17 +988,6 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">RSS Sources</div>
-      <div class="settings-card">
-        <div class="chip-list" id="sourcesChipList"></div>
-        <div class="chip-add-row">
-          <input type="url" id="newSourceInput" placeholder="https://www.reddit.com/r/subreddit/.rss" onkeydown="if(event.key==='Enter')addSource()">
-          <button class="chip-add-btn" onclick="addSource()">Add</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="settings-section">
       <div class="settings-section-title">Check-In Questions</div>
       <div class="settings-card">
         <div class="chip-list" id="questionsChipList"></div>
@@ -1582,7 +1571,6 @@ async function checkLinks(id) {
 // ══ SETTINGS ══
 function renderSettings() {
   renderChipList('topicsChipList',       S.topics,       'pt_topics',        1);
-  renderChipList('sourcesChipList',      S.sources,      'pt_sources',       1);
   renderChipList('questionsChipList',    S.questions,    'pt_questions',     1);
   document.getElementById('workerUrlInput').value = S.workerUrl;
   document.getElementById('apiKeyInput').value    = S.apiKey;
@@ -1619,13 +1607,6 @@ function addTopic() {
   if (!v) return;
   S.topics.push(v); save('pt_topics', S.topics);
   document.getElementById('newTopicInput').value = '';
-  renderSettings();
-}
-function addSource() {
-  const v = document.getElementById('newSourceInput').value.trim();
-  if (!v) return;
-  S.sources.push(v); save('pt_sources', S.sources);
-  document.getElementById('newSourceInput').value = '';
   renderSettings();
 }
 function addQuestion() {
