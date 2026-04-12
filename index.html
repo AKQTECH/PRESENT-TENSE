@@ -1001,8 +1001,8 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     <div class="settings-section">
       <div class="settings-section-title">X Journal</div>
       <div class="settings-card">
-        <div id="xJournalList" style="font-size:13px;color:var(--teal-dark);"></div>
-        <div id="xJournalEmpty" style="font-size:13px;color:var(--text-mid);padding:8px 0;">No entries yet.</div>
+        <div id="xJournalList" style="font-size:13px;color:var(--teal-dark);padding:0 16px;"></div>
+        <div id="xJournalEmpty" style="font-size:13px;color:var(--text-mid);padding:12px 16px;">No entries yet.</div>
       </div>
     </div>
 
@@ -1320,8 +1320,8 @@ function showDigestError(code, detail) {
     (code === 'network' ? 'Could not reach the Worker.' :
      code === 'anthropic_error' ? 'Anthropic rejected the request.' :
      code === 'no_rss' ? 'None of your RSS feeds responded.' :
-     code === 'parse_error' ? 'The AI response could not be parsed.' :
-     'Something went wrong.') + (!isRateLimit && detail ? ' (' + detail + ')' : '');
+     code === 'parse_error' ? 'Parse error.' :
+     'Something went wrong.') + (detail ? ' ' + detail : '');
   box.classList.add('show');
 }
 

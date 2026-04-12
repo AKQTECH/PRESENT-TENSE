@@ -1,4 +1,4 @@
-const CACHE = 'present-tense-v11';
+const CACHE = 'present-tense-v12';
 const OFFLINE_ASSETS = [
   './',
   './index.html',
