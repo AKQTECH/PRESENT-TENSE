@@ -1357,6 +1357,18 @@ function markDigestRead() {
   save('pt_digest_time', 0);
   document.getElementById('digestList').innerHTML = '';
   document.getElementById('digestEnd').classList.remove('show');
+
+  // Also clear fandom read
+  S.fandom = null;
+  S.fandomTime = 0;
+  save('pt_fandom', null);
+  save('pt_fandom_time', 0);
+  document.getElementById('fandomList').innerHTML = '';
+  const fandomBox = document.getElementById('fandomBox');
+  fandomBox.classList.remove('loading');
+  fandomBox.querySelector('.fandom-status').textContent = '';
+  fandomBox.style.display = 'none';
+
   showDigestCleared(now);
 }
 
