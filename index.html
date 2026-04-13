@@ -1014,6 +1014,8 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
           <input type="url" id="workerUrlInput" placeholder="https://present-tense.yourname.workers.dev">
           <label class="form-label" style="margin-top:4px">Anthropic API Key</label>
           <input type="text" id="apiKeyInput" placeholder="sk-ant-&hellip;">
+          <label class="form-label" style="margin-top:10px">Apify Dataset URL <span style="font-weight:400;color:var(--text-mid)">(optional &mdash; for Twitter/X feed)</span></label>
+          <input type="url" id="apifyUrlInput" placeholder="https://api.apify.com/v2/datasets/&hellip;">
           <button class="btn-primary" style="margin-top:4px" onclick="saveConfig()">Save</button>
         </div>
       </div>
@@ -1024,7 +1026,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <div class="settings-card">
         <div class="settings-row">
           <div>
-            <div class="settings-row-label">Present Tense v2</div>
+            <div class="settings-row-label">Present Tense v5</div>
             <div class="settings-row-sub">Built for April Korto Quioh</div>
           </div>
         </div>
@@ -1142,6 +1144,8 @@ let S = {
   fandomTime:    load('pt_fandom_time',    0),
   workerUrl:     load('pt_worker_url',     ''),
   apiKey:        load('pt_api_key',        ''),
+  apifyUrl:      load('pt_apify_url',      ''),
+  rotationSlot:  load('pt_rotation_slot',  0),
   qIdx:          0,
 };
 
@@ -1232,12 +1236,21 @@ function toggleAlternatives() {
 }
 
 // ══ DIGEST ══
+const SLOT_LABELS = ['Gossip + Music + Fandom', 'Film + Comedy + Culture', 'LA Life + Fashion + Wellness', 'Industry + Writers + Talent'];
 function getSession() { return 'Digest'; }
-function getSlotLabel() { return 'Digest'; }
+function getSlotLabel() { return SLOT_LABELS[S.rotationSlot % SLOT_LABELS.length]; }
 
 function digestIsStale() {
   return (Date.now() - S.digestTime) > 6 * 60 * 60 * 1000;
 }
+
+function advanceRotation() {
+  S.rotationSlot = (S.rotationSlot + 1) % SLOT_LABELS.length;
+  save('pt_rotation_slot', S.rotationSlot);
+  document.getElementById('digestSessionLabel').textContent = getSlotLabel();
+}
+
+// showToast defined in UTILS section below
 
 function renderDigest() {
   document.getElementById('digestSessionLabel').textContent = getSlotLabel();
@@ -1284,13 +1297,29 @@ async function loadDigest(force) {
     const res = await fetch(S.workerUrl + '/digest', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: S.apiKey })
+      body: JSON.stringify({
+        api_key: S.apiKey,
+        rotation_slot: S.rotationSlot,
+        apify_url: S.apifyUrl || undefined
+      })
     });
     const data = await res.json();
     if (!res.ok || data.error) {
+      // If there are items despite the error (fallback data), show them
+      if (data.items && data.items.length > 0) {
+        S.digest = data.items;
+        S.digestTime = Date.now();
+        save('pt_digest', S.digest);
+        save('pt_digest_time', S.digestTime);
+        updateDigestTimestamp();
+        renderDigestItems(S.digest);
+        if (data.note) showToast(data.note);
+        // Still advance rotation and fire fandom
+        advanceRotation();
+        setTimeout(() => loadFandom(force), 90000);
+        return;
+      }
       showDigestError(data.error || ('HTTP ' + res.status), data.detail || data.message);
-      // Don't fire fandom immediately — it'll hit the same rate limit.
-      // Fandom will load on next successful digest refresh.
       return;
     }
     if (!Array.isArray(data.items)) {
@@ -1303,8 +1332,10 @@ async function loadDigest(force) {
     save('pt_digest_time', S.digestTime);
     updateDigestTimestamp();
     renderDigestItems(S.digest);
-    // News done — now kick off fandom. 90s buffer so the per-minute
-    // rate limit window resets before the fandom call fires.
+    if (data.note) showToast(data.note);
+    // Advance rotation slot for next refresh
+    advanceRotation();
+    // News done — now kick off fandom. 90s buffer for rate limit.
     setTimeout(() => loadFandom(force), 90000);
   } catch (e) {
     showDigestError('network', e.message || 'Could not reach the Worker.');
@@ -1317,11 +1348,12 @@ function showDigestError(code, detail) {
   const isRateLimit = detail && detail.includes('rate_limit');
   box.querySelector('.digest-error-detail').textContent =
     isRateLimit ? 'Rate limit hit — wait 2 minutes before trying again.' :
-    (code === 'network' ? 'Could not reach the Worker.' :
-     code === 'anthropic_error' ? 'Anthropic rejected the request.' :
-     code === 'no_rss' ? 'None of your RSS feeds responded.' :
-     code === 'parse_error' ? 'Parse error.' :
-     'Something went wrong.') + (detail ? ' ' + detail : '');
+    (code === 'network' ? 'Could not reach the Worker. Check your internet connection.' :
+     code === 'anthropic_error' ? 'Anthropic rejected the request. (' + (detail || '').slice(0, 200) + ')' :
+     code === 'parse_error' ? 'The AI response could not be parsed.' :
+     code === 'json_parse_error' ? 'The AI response was malformed.' :
+     code === 'ai_call_failed' ? 'Could not reach Anthropic API.' :
+     'Something went wrong.') + (detail && !isRateLimit && code !== 'anthropic_error' ? ' ' + detail.slice(0, 200) : '');
   box.classList.add('show');
 }
 
@@ -1580,6 +1612,7 @@ function renderSettings() {
   renderChipList('questionsChipList',    S.questions,    'pt_questions',     1);
   document.getElementById('workerUrlInput').value = S.workerUrl;
   document.getElementById('apiKeyInput').value    = S.apiKey;
+  document.getElementById('apifyUrlInput').value  = S.apifyUrl;
   renderXJournal();
 }
 
@@ -1648,8 +1681,10 @@ function addQuestion() {
 function saveConfig() {
   S.workerUrl = document.getElementById('workerUrlInput').value.trim().replace(/\/$/, '');
   S.apiKey    = document.getElementById('apiKeyInput').value.trim();
+  S.apifyUrl  = document.getElementById('apifyUrlInput').value.trim();
   save('pt_worker_url', S.workerUrl);
   save('pt_api_key',    S.apiKey);
+  save('pt_apify_url',  S.apifyUrl);
   showToast('Saved');
 }
 
