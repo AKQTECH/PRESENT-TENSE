@@ -883,6 +883,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <span class="digest-session-label" id="digestTimestamp"></span>
       <button class="digest-refresh-btn" onclick="loadDigest(true)" title="Refresh">&#8635;</button>
     </div>
+    <div id="lastCaughtUp" style="text-align:center;font-size:0.82rem;color:var(--muted);margin:-6px 0 8px 0;font-style:italic"></div>
 
     <div class="digest-loading" id="digestLoading">
       <div class="spinner"></div>
@@ -1145,7 +1146,6 @@ let S = {
   workerUrl:     load('pt_worker_url',     ''),
   apiKey:        load('pt_api_key',        ''),
   apifyUrl:      load('pt_apify_url',      ''),
-  rotationSlot:  load('pt_rotation_slot',  0),
   qIdx:          0,
 };
 
@@ -1236,24 +1236,15 @@ function toggleAlternatives() {
 }
 
 // ══ DIGEST ══
-const SLOT_LABELS = ['Gossip + Music + Fandom', 'Film + Comedy + Culture', 'LA Life + Fashion + Wellness', 'Industry + Writers + Talent'];
-function getSession() { return 'Digest'; }
-function getSlotLabel() { return SLOT_LABELS[S.rotationSlot % SLOT_LABELS.length]; }
 
 function digestIsStale() {
   return (Date.now() - S.digestTime) > 6 * 60 * 60 * 1000;
 }
 
-function advanceRotation() {
-  S.rotationSlot = (S.rotationSlot + 1) % SLOT_LABELS.length;
-  save('pt_rotation_slot', S.rotationSlot);
-  document.getElementById('digestSessionLabel').textContent = getSlotLabel();
-}
-
 // showToast defined in UTILS section below
 
 function renderDigest() {
-  document.getElementById('digestSessionLabel').textContent = getSlotLabel();
+  document.getElementById('digestSessionLabel').textContent = 'Digest';
   updateDigestTimestamp();
   renderFandom(S.fandom);
   loadDigest(false);
@@ -1261,11 +1252,15 @@ function renderDigest() {
 
 function updateDigestTimestamp() {
   const ts = document.getElementById('digestTimestamp');
+  const lcu = document.getElementById('lastCaughtUp');
   if (S.digestTime) {
     const d = new Date(S.digestTime);
-    ts.textContent = 'Updated ' + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    const timeStr = d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}).toLowerCase();
+    ts.textContent = '';
+    lcu.textContent = 'you last got caught up at ' + timeStr + '.';
   } else {
     ts.textContent = '';
+    lcu.textContent = '';
   }
 }
 
@@ -1281,13 +1276,11 @@ async function loadDigest(force) {
   document.getElementById('digestSetupMsg').classList.remove('show');
   document.getElementById('digestError').classList.remove('show');
 
-  // News digest (AI call) runs FIRST, then fandom (AI calls with web_search).
-  // Serialized to avoid colliding on the 50k input tokens/min rate limit.
+  // Fire fandom in parallel with digest (Tier 2 rate limits can handle both)
+  loadFandom(force);
 
   if (!force && S.digest && !digestIsStale()) {
     renderDigestItems(S.digest);
-    // Still kick off fandom after rendering cached news
-    loadFandom(force);
     return;
   }
   document.getElementById('digestLoading').classList.add('show');
@@ -1299,7 +1292,6 @@ async function loadDigest(force) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         api_key: S.apiKey,
-        rotation_slot: S.rotationSlot,
         apify_url: S.apifyUrl || undefined
       })
     });
@@ -1314,9 +1306,7 @@ async function loadDigest(force) {
         updateDigestTimestamp();
         renderDigestItems(S.digest);
         if (data.note) showToast(data.note);
-        // Still advance rotation and fire fandom
-        advanceRotation();
-        setTimeout(() => loadFandom(force), 90000);
+
         return;
       }
       showDigestError(data.error || ('HTTP ' + res.status), data.detail || data.message);
@@ -1333,10 +1323,6 @@ async function loadDigest(force) {
     updateDigestTimestamp();
     renderDigestItems(S.digest);
     if (data.note) showToast(data.note);
-    // Advance rotation slot for next refresh
-    advanceRotation();
-    // News done — now kick off fandom. 90s buffer for rate limit.
-    setTimeout(() => loadFandom(force), 90000);
   } catch (e) {
     showDigestError('network', e.message || 'Could not reach the Worker.');
   }
@@ -1438,7 +1424,7 @@ async function loadFandom(force) {
     const res = await fetch(S.workerUrl + '/fandom', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: S.apiKey, topic: 'Hudcon' })
+      body: JSON.stringify({ api_key: S.apiKey, topic: 'Hudcon', apify_url: S.apifyUrl || '' })
     });
     const data = await res.json();
     box.classList.remove('loading');
