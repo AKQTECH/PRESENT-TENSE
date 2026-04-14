@@ -349,10 +349,12 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
 .section-count.zero { background: transparent; color: var(--text-mid); }
 .section-arrow {
   transition: transform 0.2s;
-  font-size: 14px;
   color: var(--teal-mid);
+  display: block;
 }
 .section.open .section-arrow { transform: rotate(90deg); }
+.section-header.empty { cursor: default; opacity: 0.75; }
+.section-header.empty .section-arrow { opacity: 0.35; }
 .section-body {
   display: none;
   padding: 0 0 8px;
@@ -441,15 +443,11 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   margin-bottom: 14px;
   letter-spacing: 6px;
 }
-.all-caught-up h2 {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  margin-bottom: 6px;
-}
 .all-caught-up p {
-  font-size: 13px;
-  color: var(--text-mid);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  letter-spacing: -0.01em;
 }
 
 .mark-read-bar {
@@ -758,8 +756,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
 
     <div class="all-caught-up" id="allCaughtUp">
       <div class="all-caught-up-mark">&#8211;&#8212;&#8211;</div>
-      <h2>you&rsquo;re caught up.</h2>
-      <p id="allCaughtUpSub"></p>
+      <p id="allCaughtUpSub">you did it. you&rsquo;re free.</p>
     </div>
 
     <div class="mark-read-bar" id="markReadBar">
@@ -958,18 +955,26 @@ function saveSeenSet(set) {
   save('pt_seen_set', trimmed);
 }
 
+// lastRefreshTime is the Tier-1 cursor. On first-ever use, we default to
+// (now - 4h) so April isn't hit with a giant first-refresh harvest. After
+// that, every pull-to-refresh and every mark-caught-up advances it to now.
+const DEFAULT_TIER1_LOOKBACK_MS = 4 * 60 * 60 * 1000; // 4 hours
 let S = {
-  questions:     load('pt_questions',      DEFAULT_QUESTIONS),
-  research:      load('pt_research',       []),
-  caughtUpTime:  load('pt_caught_up_time', 0),
-  workerUrl:     load('pt_worker_url',     ''),
-  apiKey:        load('pt_api_key',        ''),
-  sources:       load('pt_sources_cache',  { reddit: [], substack: [] }),
-  summaryCache:  load('pt_summary_cache',  {}),
-  seen:          loadSeenSet(),
-  sectionOpen:   load('pt_section_open',   { reddit: true, substack: true }),
-  qIdx:          0,
-  feed:          null
+  questions:        load('pt_questions',      DEFAULT_QUESTIONS),
+  research:         load('pt_research',       []),
+  caughtUpTime:     load('pt_caught_up_time', 0),
+  lastRefreshTime:  load('pt_last_refresh_time', Date.now() - DEFAULT_TIER1_LOOKBACK_MS),
+  hasEverRefreshed: load('pt_has_ever_refreshed', false),
+  workerUrl:        load('pt_worker_url',     ''),
+  apiKey:           load('pt_api_key',        ''),
+  sources:          load('pt_sources_cache',  { reddit: [], substack: [] }),
+  summaryCache:     load('pt_summary_cache',  {}),
+  seen:             loadSeenSet(),
+  sectionOpen:      load('pt_section_open',   { reddit: true, substack: true }),
+  qIdx:             0,
+  // Feed is persisted — closing the app doesn't wipe your unacted items.
+  // Only pull-to-refresh and mark-caught-up reset it.
+  feed:             load('pt_feed',           null)
 };
 
 // On boot, sweep any previously-cached Haiku refusals out of summaryCache so
@@ -1064,18 +1069,34 @@ function enterDigestScreen() {
 }
 
 function showRestingState() {
-  // Clean the screen — no loading, no error, no sections, no mark-read bar.
-  // Just the top caughtUpLine + a resting "you're caught up" block.
+  // Clean screen. Two-row dropdowns (Reddit/Substack) show even when empty —
+  // both at count 0 — and beneath them the "you did it. you're free." block.
+  // On first-ever use (no caughtUpTime yet), the copy prompts for the first pull.
   document.getElementById('digestSetupMsg').classList.remove('show');
   document.getElementById('digestError').classList.remove('show');
   document.getElementById('digestLoading').classList.remove('show');
-  document.getElementById('digestSections').innerHTML = '';
   document.getElementById('markReadBar').classList.remove('show');
+  // Render the two empty dropdown rows so the UI is consistent
+  renderEmptyRows();
   const allEl = document.getElementById('allCaughtUp');
-  document.getElementById('allCaughtUpSub').textContent = S.caughtUpTime
-    ? 'pull down to check if anything new came in.'
+  document.getElementById('allCaughtUpSub').textContent = (S.caughtUpTime || S.hasEverRefreshed)
+    ? 'you did it. you\u2019re free.'
     : 'pull down to load your feed for the first time.';
   allEl.classList.add('show');
+}
+
+// Render the two dropdown rows with zero counts, no body content.
+function renderEmptyRows() {
+  const sectionsEl = document.getElementById('digestSections');
+  sectionsEl.innerHTML = '';
+  sectionsEl.appendChild(renderSection({
+    key: 'reddit', title: 'Reddit', items: [],
+    isOpen: false, renderItem: renderRedditCard
+  }));
+  sectionsEl.appendChild(renderSection({
+    key: 'substack', title: 'Substack', items: [],
+    isOpen: false, renderItem: renderSubstackCard
+  }));
 }
 
 function showSetupMsg() {
@@ -1122,7 +1143,36 @@ async function loadDigest(force) {
       showDigestError(data.error || ('HTTP ' + res.status), data.detail);
       return;
     }
-    S.feed = data;
+
+    // Apply the Tier-1 cursor: priority subs show only posts with
+    // timestamp > S.lastRefreshTime. (Scan subs + Substacks already
+    // have a server-side 24h cap — seen-set dedups those on render.)
+    const cursor = S.lastRefreshTime || (Date.now() - DEFAULT_TIER1_LOOKBACK_MS);
+    const filteredReddit = (Array.isArray(data.reddit) ? data.reddit : []).map(rg => {
+      if (!rg || !Array.isArray(rg.items)) return { ...rg, items: [] };
+      const isPriority = rg.tier === 'priority' || (rg.items[0] && rg.items[0].tier === 'priority');
+      const items = isPriority
+        ? rg.items.filter(it => it.timestamp > cursor && !S.seen.has(it.id))
+        : rg.items.filter(it => !S.seen.has(it.id));
+      return { ...rg, items };
+    });
+    const filteredSubstack = (Array.isArray(data.substack) ? data.substack : []).map(sg => {
+      if (!sg || !Array.isArray(sg.items)) return { ...sg, items: [] };
+      return { ...sg, items: sg.items.filter(it => !S.seen.has(it.id)) };
+    });
+
+    S.feed = {
+      reddit: filteredReddit,
+      substack: filteredSubstack,
+      fetched_at: data.fetched_at || Date.now()
+    };
+    // Advance the cursor — next refresh starts from right now.
+    S.lastRefreshTime = Date.now();
+    S.hasEverRefreshed = true;
+    save('pt_last_refresh_time', S.lastRefreshTime);
+    save('pt_has_ever_refreshed', true);
+    save('pt_feed', S.feed);
+
     // Also refresh sources cache
     if (Array.isArray(data.reddit)) {
       S.sources.reddit = data.reddit.map(r => r.subreddit);
@@ -1151,11 +1201,10 @@ function showDigestError(code, detail) {
 function renderFeed() {
   const sectionsEl = document.getElementById('digestSections');
   sectionsEl.innerHTML = '';
-  if (!S.feed) return;
+  if (!S.feed) { showRestingState(); return; }
 
   // Flatten all groups down to two plain arrays (one per source type),
-  // filter against seen-set, sort newest first. No per-source subgroups —
-  // those were the "archive of everyone I subscribe to" feeling.
+  // filter against seen-set, sort newest first.
   const redditItems = [];
   (S.feed.reddit || []).forEach(rg => {
     (rg.items || []).forEach(it => {
@@ -1163,7 +1212,7 @@ function renderFeed() {
     });
   });
   const substackItems = [];
-  const substackGroupsForSummary = []; // queueSummaries wants group shape
+  const substackGroupsForSummary = [];
   (S.feed.substack || []).forEach(sg => {
     const unseen = (sg.items || []).filter(it => !S.seen.has(it.id));
     unseen.forEach(it => substackItems.push(it));
@@ -1193,11 +1242,22 @@ function renderFeed() {
     renderItem: renderSubstackCard
   }));
 
-  // All caught up state — single timestamp in top caughtUpLine (see updateCaughtUpLine).
+  // Seeing something IS knowing it. Auto-stamp every rendered item into
+  // seen-set so the next refresh only shows what's actually new to her.
+  if (totalNew > 0) {
+    redditItems.forEach(it => S.seen.add(it.id));
+    substackItems.forEach(it => S.seen.add(it.id));
+    saveSeenSet(S.seen);
+  }
+
+  // Bottom block — always "you did it. you're free." once she's caught up
+  // at least once. Never appears alongside items.
   const allEl = document.getElementById('allCaughtUp');
   const markBar = document.getElementById('markReadBar');
   if (totalNew === 0) {
-    document.getElementById('allCaughtUpSub').textContent = 'nothing new right now.';
+    document.getElementById('allCaughtUpSub').textContent = (S.caughtUpTime || S.hasEverRefreshed)
+      ? 'you did it. you\u2019re free.'
+      : 'pull down to load your feed for the first time.';
     allEl.classList.add('show');
     markBar.classList.remove('show');
   } else {
@@ -1210,40 +1270,39 @@ function renderFeed() {
   queueSummaries(substackGroupsForSummary);
 }
 
-// Dropdown: title + count badge header; body is either a flat chronological
-// list of cards, OR a single "nothing new" line if empty. No per-source
-// subgroups — the individual source is shown inline on each card.
+// Dropdown: title + count badge header. When empty (count 0), the body
+// is omitted entirely — no filler copy. Individual source shown inline on each card.
 function renderSection({ key, title, items, isOpen, renderItem }) {
   const sec = document.createElement('div');
   sec.className = 'section' + (isOpen ? ' open' : '');
 
   const count = items.length;
+  // Disable click on zero-count dropdowns — nothing to open.
+  const isEmpty = count === 0;
   const header = document.createElement('div');
-  header.className = 'section-header';
+  header.className = 'section-header' + (isEmpty ? ' empty' : '');
+  // SVG chevron replaces the unicode ▶ (per NO EMOJI rule). Rotates via CSS.
+  const chevronSvg =
+    '<svg class="section-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">' +
+      '<path d="M4.5 3L9.5 7L4.5 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '</svg>';
   header.innerHTML =
     '<div class="section-title">' + esc(title) + '</div>' +
     '<div class="section-meta">' +
-      '<span class="section-count' + (count === 0 ? ' zero' : '') + '">' + count + '</span>' +
-      '<span class="section-arrow">&#x25B6;</span>' +
+      '<span class="section-count' + (isEmpty ? ' zero' : '') + '">' + count + '</span>' +
+      chevronSvg +
     '</div>';
-  header.onclick = () => toggleSection(key);
+  if (!isEmpty) header.onclick = () => toggleSection(key);
   sec.appendChild(header);
 
-  const body = document.createElement('div');
-  body.className = 'section-body';
-
-  if (count === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'source-group-empty';
-    empty.style.textAlign = 'center';
-    empty.style.padding = '18px 20px';
-    empty.textContent = 'nothing new since your last refresh.';
-    body.appendChild(empty);
-  } else {
+  // No filler copy inside empty dropdowns — the count badge is enough.
+  if (!isEmpty) {
+    const body = document.createElement('div');
+    body.className = 'section-body';
     items.forEach(it => body.appendChild(renderItem(it)));
+    sec.appendChild(body);
   }
 
-  sec.appendChild(body);
   return sec;
 }
 
@@ -1261,6 +1320,15 @@ function renderRedditCard(item) {
   a.rel = 'noopener noreferrer';
   const timeStr = relativeTime(item.timestamp);
   const textSnippet = item.text ? item.text.slice(0, 240) + (item.text.length > 240 ? '\u2026' : '') : '';
+  // SVG upvote arrow + comments icon per NO EMOJI rule
+  const upvoteSvg =
+    '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" style="vertical-align:-1px;margin-right:3px">' +
+      '<path d="M5.5 2L9 7H2L5.5 2Z" fill="currentColor"/>' +
+    '</svg>';
+  const commentSvg =
+    '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true" style="vertical-align:-1px;margin-right:3px">' +
+      '<path d="M2 3.5C2 2.67 2.67 2 3.5 2H7.5C8.33 2 9 2.67 9 3.5V6C9 6.83 8.33 7.5 7.5 7.5H5.5L3.5 9V7.5H3.5C2.67 7.5 2 6.83 2 6V3.5Z" stroke="currentColor" stroke-width="1" fill="none"/>' +
+    '</svg>';
   a.innerHTML =
     '<div class="feed-card-meta">' +
       '<span class="feed-card-source">' + esc(item.source) + '</span>' +
@@ -1269,8 +1337,8 @@ function renderRedditCard(item) {
     '<div class="feed-card-title">' + esc(item.title) + '</div>' +
     (textSnippet ? '<div class="feed-card-text">' + esc(textSnippet) + '</div>' : '') +
     '<div class="feed-card-stats">' +
-      '<span>\u25B2 ' + (item.score || 0) + '</span>' +
-      '<span>\u{1F4AC} ' + (item.comments || 0) + '</span>' +
+      '<span>' + upvoteSvg + (item.score || 0) + '</span>' +
+      '<span>' + commentSvg + (item.comments || 0) + '</span>' +
     '</div>';
   return a;
 }
@@ -1427,15 +1495,23 @@ function applySummaryToDOM(id, summary) {
 
 // ══ MARK AS READ ══
 function markAllRead() {
-  // Add every currently-displayed item id to seen-set
-  if (!S.feed) return;
-  (S.feed.reddit || []).forEach(g => (g.items || []).forEach(it => S.seen.add(it.id)));
-  (S.feed.substack || []).forEach(g => (g.items || []).forEach(it => S.seen.add(it.id)));
-  saveSeenSet(S.seen);
-  S.caughtUpTime = Date.now();
+  // Add every currently-displayed item id to seen-set, clear the feed,
+  // and advance BOTH cursors (caughtUpTime for display, lastRefreshTime
+  // so the next refresh starts from right now).
+  if (S.feed) {
+    (S.feed.reddit || []).forEach(g => (g.items || []).forEach(it => S.seen.add(it.id)));
+    (S.feed.substack || []).forEach(g => (g.items || []).forEach(it => S.seen.add(it.id)));
+    saveSeenSet(S.seen);
+  }
+  const now = Date.now();
+  S.caughtUpTime = now;
+  S.lastRefreshTime = now;
+  S.feed = null;
   save('pt_caught_up_time', S.caughtUpTime);
-  // renderFeed() will call updateCaughtUpLine() with the correct flag for us
-  renderFeed();
+  save('pt_last_refresh_time', S.lastRefreshTime);
+  save('pt_feed', null);
+  updateCaughtUpLine();
+  showRestingState();
   showToast('caught up.');
 }
 
