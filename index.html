@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.workers.dev; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests">
+<meta http-equiv="Referrer-Policy" content="no-referrer">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Present Tense">
@@ -491,10 +494,14 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  box-shadow: 0 4px 0 rgba(1, 57, 74, 0.22);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.15s ease;
 }
-.mark-read-btn:hover { opacity: 0.88; }
-.mark-read-btn:active { transform: scale(0.96); }
+.mark-read-btn:hover { opacity: 0.92; }
+.mark-read-btn:active {
+  transform: translateY(3px) scale(0.94);
+  box-shadow: 0 1px 0 rgba(1, 57, 74, 0.22);
+}
 .mark-read-btn svg {
   display: block;
   width: 22px;
@@ -1531,6 +1538,9 @@ function applySummaryToDOM(id, summary) {
 
 // ══ MARK AS READ ══
 function markAllRead() {
+  // Haptic punch on press — iOS/Android PWAs will honor this where supported.
+  if (navigator.vibrate) { try { navigator.vibrate(12); } catch (_) {} }
+
   // Add every currently-displayed item id to seen-set, clear the feed,
   // and advance BOTH cursors (caughtUpTime for display, lastRefreshTime
   // so the next refresh starts from right now).
@@ -1548,10 +1558,12 @@ function markAllRead() {
   save('pt_feed', null);
   updateCaughtUpLine();
   showRestingState();
-  // Scroll back to top so the fresh "last caught up at..." timestamp is visible.
+  // Instant (not smooth) snap to top — the feed just collapsed from full to
+  // empty, so an instant scroll matches the reflow and gives that "velocity"
+  // flick feeling instead of a soft animated glide.
   const screenEl = document.getElementById('screen-digest');
-  if (screenEl) screenEl.scrollTo({ top: 0, behavior: 'smooth' });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (screenEl) screenEl.scrollTop = 0;
+  window.scrollTo(0, 0);
   showToast('caught up.');
 }
 
