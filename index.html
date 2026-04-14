@@ -972,6 +972,19 @@ let S = {
   feed:          null
 };
 
+// On boot, sweep any previously-cached Haiku refusals out of summaryCache so
+// those posts re-queue and take the excerpt-fallback path next render.
+(function pruneRefusalSummaries() {
+  let changed = false;
+  for (const id in S.summaryCache) {
+    if (isRefusal(S.summaryCache[id])) {
+      delete S.summaryCache[id];
+      changed = true;
+    }
+  }
+  if (changed) save('pt_summary_cache', S.summaryCache);
+})();
+
 // ══ NAV ══
 function switchScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1140,59 +1153,51 @@ function renderFeed() {
   sectionsEl.innerHTML = '';
   if (!S.feed) return;
 
-  // Filter against seen-set
-  const redditGroups = (S.feed.reddit || []).map(rg => ({
-    subreddit: rg.subreddit,
-    error: rg.error,
-    items: (rg.items || []).filter(it => !S.seen.has(it.id))
-  }));
-  const substackGroups = (S.feed.substack || []).map(sg => ({
-    feed: sg.feed,
-    publication: sg.publication,
-    error: sg.error,
-    items: (sg.items || []).filter(it => !S.seen.has(it.id))
-  }));
+  // Flatten all groups down to two plain arrays (one per source type),
+  // filter against seen-set, sort newest first. No per-source subgroups —
+  // those were the "archive of everyone I subscribe to" feeling.
+  const redditItems = [];
+  (S.feed.reddit || []).forEach(rg => {
+    (rg.items || []).forEach(it => {
+      if (!S.seen.has(it.id)) redditItems.push(it);
+    });
+  });
+  const substackItems = [];
+  const substackGroupsForSummary = []; // queueSummaries wants group shape
+  (S.feed.substack || []).forEach(sg => {
+    const unseen = (sg.items || []).filter(it => !S.seen.has(it.id));
+    unseen.forEach(it => substackItems.push(it));
+    if (unseen.length) substackGroupsForSummary.push({ items: unseen });
+  });
 
-  const redditNewCount = redditGroups.reduce((n, g) => n + g.items.length, 0);
-  const substackNewCount = substackGroups.reduce((n, g) => n + g.items.length, 0);
-  const totalNew = redditNewCount + substackNewCount;
+  redditItems.sort((a, b) => b.timestamp - a.timestamp);
+  substackItems.sort((a, b) => b.timestamp - a.timestamp);
 
-  // Reddit section
+  const totalNew = redditItems.length + substackItems.length;
+
+  // Reddit dropdown — flat list inside, no per-subreddit headers
   sectionsEl.appendChild(renderSection({
     key: 'reddit',
     title: 'Reddit',
-    newCount: redditNewCount,
+    items: redditItems,
     isOpen: S.sectionOpen.reddit,
-    groups: redditGroups,
-    renderItem: renderRedditCard,
-    groupLabel: g => 'r/' + g.subreddit,
-    groupEmptyMsg: g => g.error
-      ? 'couldn\u2019t reach r/' + g.subreddit + ' (' + g.error + ')'
-      : 'nothing new in r/' + g.subreddit + ' since you last checked'
+    renderItem: renderRedditCard
   }));
 
-  // Substack section
+  // Substack dropdown — flat list inside, no per-publication headers
   sectionsEl.appendChild(renderSection({
     key: 'substack',
     title: 'Substack',
-    newCount: substackNewCount,
+    items: substackItems,
     isOpen: S.sectionOpen.substack,
-    groups: substackGroups,
-    renderItem: renderSubstackCard,
-    groupLabel: g => g.publication || g.feed,
-    groupEmptyMsg: g => g.error
-      ? 'couldn\u2019t reach ' + (g.publication || g.feed) + ' (' + g.error + ')'
-      : 'nothing new from ' + (g.publication || g.feed) + ' since you last checked'
+    renderItem: renderSubstackCard
   }));
 
-  // All caught up state — the single timestamp lives in the top caughtUpLine.
-  // The allCaughtUpSub never repeats it (that was the duplicate-timestamp bug).
+  // All caught up state — single timestamp in top caughtUpLine (see updateCaughtUpLine).
   const allEl = document.getElementById('allCaughtUp');
   const markBar = document.getElementById('markReadBar');
   if (totalNew === 0) {
-    document.getElementById('allCaughtUpSub').textContent = S.caughtUpTime
-      ? 'nothing new right now.'
-      : 'nothing new right now.';
+    document.getElementById('allCaughtUpSub').textContent = 'nothing new right now.';
     allEl.classList.add('show');
     markBar.classList.remove('show');
   } else {
@@ -1201,20 +1206,24 @@ function renderFeed() {
   }
   updateCaughtUpLine();
 
-  // Lazy-load Substack summaries
-  queueSummaries(substackGroups);
+  // Lazy-load Substack summaries — only for items actually displayed
+  queueSummaries(substackGroupsForSummary);
 }
 
-function renderSection({ key, title, newCount, isOpen, groups, renderItem, groupLabel, groupEmptyMsg }) {
+// Dropdown: title + count badge header; body is either a flat chronological
+// list of cards, OR a single "nothing new" line if empty. No per-source
+// subgroups — the individual source is shown inline on each card.
+function renderSection({ key, title, items, isOpen, renderItem }) {
   const sec = document.createElement('div');
   sec.className = 'section' + (isOpen ? ' open' : '');
 
+  const count = items.length;
   const header = document.createElement('div');
   header.className = 'section-header';
   header.innerHTML =
     '<div class="section-title">' + esc(title) + '</div>' +
     '<div class="section-meta">' +
-      '<span class="section-count' + (newCount === 0 ? ' zero' : '') + '">' + newCount + '</span>' +
+      '<span class="section-count' + (count === 0 ? ' zero' : '') + '">' + count + '</span>' +
       '<span class="section-arrow">&#x25B6;</span>' +
     '</div>';
   header.onclick = () => toggleSection(key);
@@ -1223,28 +1232,16 @@ function renderSection({ key, title, newCount, isOpen, groups, renderItem, group
   const body = document.createElement('div');
   body.className = 'section-body';
 
-  groups.forEach(g => {
-    const grp = document.createElement('div');
-    grp.className = 'source-group';
-    const label = groupLabel(g);
-    const count = g.items.length;
-    const hdr = document.createElement('div');
-    hdr.className = 'source-group-header';
-    hdr.innerHTML =
-      '<span>' + esc(label) + '</span>' +
-      (count > 0 ? '<span style="color:var(--teal-dark);">' + count + '</span>' : '');
-    grp.appendChild(hdr);
-
-    if (count === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'source-group-empty';
-      empty.textContent = groupEmptyMsg(g);
-      grp.appendChild(empty);
-    } else {
-      g.items.forEach(it => grp.appendChild(renderItem(it)));
-    }
-    body.appendChild(grp);
-  });
+  if (count === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'source-group-empty';
+    empty.style.textAlign = 'center';
+    empty.style.padding = '18px 20px';
+    empty.textContent = 'nothing new since your last refresh.';
+    body.appendChild(empty);
+  } else {
+    items.forEach(it => body.appendChild(renderItem(it)));
+  }
 
   sec.appendChild(body);
   return sec;
@@ -1349,11 +1346,12 @@ async function runSummaryQueue() {
         })
       });
       const data = await res.json();
-      if (res.ok && data.summary) {
+      if (res.ok && data.summary && !isRefusal(data.summary)) {
         S.summaryCache[it.id] = data.summary;
         save('pt_summary_cache', S.summaryCache);
         applySummaryToDOM(it.id, data.summary);
       } else {
+        // Either API error OR AI refused to summarize — use excerpt fallback
         fallbackSummary(it);
       }
     } catch {
@@ -1363,11 +1361,58 @@ async function runSummaryQueue() {
   summaryRunning = false;
 }
 
+// Detect when Haiku refused to summarize (instead of giving us an actual summary).
+// These "refusals" look like real text but are really "I can't do this, give me more".
+// We treat them as failures and fall back to the raw excerpt.
+function isRefusal(text) {
+  if (!text) return true;
+  const t = String(text).trim().toLowerCase();
+  if (t.length < 12) return true;            // too short to be a real summary
+  if (t.endsWith('?')) return true;          // clarifying question
+  // Starts with "I" + a refusal word
+  if (/^i\s+(don['\u2019]t|can['\u2019]?t|cannot|couldn['\u2019]?t|'m\s+unable|am\s+unable|need\s+more)/.test(t)) return true;
+  // Common Haiku refusal phrases
+  const refusalPhrases = [
+    "don't have enough",
+    'do not have enough',
+    'need more context',
+    'need more information',
+    'provide more of the',
+    'more context',
+    'cannot accurately',
+    "can't accurately",
+    'appear contradictory',
+    'potentially fabricated',
+    'could you provide',
+    "i'm sorry",
+    'i am sorry',
+    'without additional',
+    'without more'
+  ];
+  return refusalPhrases.some(p => t.includes(p));
+}
+
+// Fallback when no API key, API error, or AI refused — use the first two
+// sentences of the RSS excerpt (per user preference: "first two lines of the post").
 function fallbackSummary(it) {
-  const fallback = (it.excerpt || '').slice(0, 150) + ((it.excerpt || '').length > 150 ? '\u2026' : '');
+  const fallback = firstTwoSentences(it.excerpt || '');
   S.summaryCache[it.id] = fallback;
   save('pt_summary_cache', S.summaryCache);
   applySummaryToDOM(it.id, fallback);
+}
+
+function firstTwoSentences(text) {
+  const clean = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!clean) return '';
+  // Split on sentence-ending punctuation followed by whitespace. Keeps the punctuation.
+  const parts = clean.match(/[^.!?]+[.!?]+(\s|$)/g);
+  if (!parts || parts.length === 0) {
+    // No sentence punctuation — return the first ~200 chars as a safe clip
+    return clean.length > 200 ? clean.slice(0, 200).trim() + '\u2026' : clean;
+  }
+  const two = parts.slice(0, 2).join('').trim();
+  // Hard cap in case someone writes a run-on sentence
+  return two.length > 280 ? two.slice(0, 280).trim() + '\u2026' : two;
 }
 
 function applySummaryToDOM(id, summary) {
