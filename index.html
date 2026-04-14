@@ -452,26 +452,54 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
 
 .mark-read-bar {
   display: none;
-  position: sticky;
-  bottom: 0;
-  background: var(--white);
-  border-top: 1px solid var(--border);
-  padding: 12px 20px;
-  text-align: center;
+  padding: 8px 20px 24px;
 }
 .mark-read-bar.show { display: block; }
+.digest-end {
+  background: var(--celery);
+  border-radius: 16px;
+  padding: 40px 24px;
+  text-align: center;
+}
+.digest-end-mark {
+  font-size: 28px;
+  color: var(--teal-dark);
+  margin-bottom: 14px;
+  letter-spacing: 6px;
+}
+.digest-end h2 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  margin-bottom: 6px;
+}
+.digest-end p {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  letter-spacing: -0.01em;
+}
 .mark-read-btn {
+  margin-top: 16px;
   background: var(--teal-dark);
   color: var(--celery);
   border: none;
   border-radius: 12px;
-  padding: 14px 28px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  width: 48px;
+  height: 48px;
   cursor: pointer;
-  min-width: 240px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.mark-read-btn:hover { opacity: 0.88; }
+.mark-read-btn:active { transform: scale(0.96); }
+.mark-read-btn svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  stroke: var(--celery);
 }
 
 /* ── SCREEN 3: I WANT IT ── */
@@ -760,7 +788,15 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     </div>
 
     <div class="mark-read-bar" id="markReadBar">
-      <button class="mark-read-btn" onclick="markAllRead()">mark everything read &amp; caught up</button>
+      <div class="digest-end">
+        <div class="digest-end-mark">&#8211;&#8212;&#8211;</div>
+        <p>you did it. you&rsquo;re free.</p>
+        <button class="mark-read-btn" onclick="markAllRead()" aria-label="mark as read">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12.5L10 17.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1512,6 +1548,10 @@ function markAllRead() {
   save('pt_feed', null);
   updateCaughtUpLine();
   showRestingState();
+  // Scroll back to top so the fresh "last caught up at..." timestamp is visible.
+  const screenEl = document.getElementById('screen-digest');
+  if (screenEl) screenEl.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   showToast('caught up.');
 }
 
