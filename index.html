@@ -37,7 +37,6 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── APP SHELL ── */
 #app {
   display: flex;
   flex-direction: column;
@@ -90,11 +89,7 @@ html, body {
   transition: color 0.15s;
 }
 .nav-btn.active { color: var(--teal-dark); }
-.nav-icon {
-  font-size: 18px;
-  line-height: 1;
-  font-style: normal;
-}
+.nav-icon { font-size: 18px; line-height: 1; font-style: normal; }
 
 /* ── SHARED ── */
 .screen-header {
@@ -132,7 +127,6 @@ html, body {
   text-align: center;
 }
 .btn-primary:hover { opacity: 0.85; }
-
 .btn-secondary {
   display: block;
   width: 100%;
@@ -149,16 +143,11 @@ html, body {
   text-align: center;
 }
 .btn-secondary:hover { border-color: var(--teal-mid); }
-
 .btn-ghost {
-  background: none;
-  border: none;
+  background: none; border: none;
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  cursor: pointer;
-  padding: 4px 0;
+  font-size: 14px; font-weight: 800;
+  color: var(--teal-dark); cursor: pointer; padding: 4px 0;
 }
 
 input[type="text"], input[type="url"], input[type="number"], textarea {
@@ -177,315 +166,140 @@ input[type="text"], input[type="url"], input[type="number"], textarea {
 input:focus, textarea:focus { border-color: var(--teal-mid); }
 
 /* ── SCREEN 1: INTERRUPT ── */
-#screen-interrupt {
-  background: var(--teal-light);
-  min-height: 100%;
-}
-
+#screen-interrupt { background: var(--teal-light); min-height: 100%; }
 .interrupt-wrap {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
   padding: 40px 32px 24px;
   text-align: center;
   min-height: calc(100vh - 68px);
 }
-
 .thursday-badge {
   background: var(--teal-dark);
   color: var(--celery);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 5px 16px;
-  border-radius: 20px;
-  margin-bottom: 32px;
-  display: none;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 5px 16px; border-radius: 20px;
+  margin-bottom: 32px; display: none;
 }
 .thursday-badge.show { display: inline-block; }
-
 .interrupt-pause {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 28px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; margin-bottom: 28px;
 }
 .interrupt-pause .pause-bar {
-  width: 10px;
-  height: 48px;
-  background: var(--celery);
-  border-radius: 4px;
+  width: 10px; height: 48px;
+  background: var(--celery); border-radius: 4px;
 }
-
 .interrupt-question {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--celery);
-  line-height: 1.35;
-  margin-bottom: 44px;
-  max-width: 300px;
+  font-size: 22px; font-weight: 800;
+  color: var(--celery); line-height: 1.35;
+  margin-bottom: 44px; max-width: 300px;
 }
-
 .interrupt-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 320px;
-  align-items: center;
+  display: flex; flex-direction: column; gap: 12px;
+  width: 100%; max-width: 320px; align-items: center;
 }
-
 .btn-open-x {
-  width: 100%;
-  background: var(--teal-mid);
-  color: var(--celery);
-  border: none;
-  border-radius: 14px;
-  padding: 18px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  cursor: pointer;
-  letter-spacing: 0.04em;
+  width: 100%; background: var(--teal-mid); color: var(--celery);
+  border: none; border-radius: 14px; padding: 18px;
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 800;
+  cursor: pointer; letter-spacing: 0.04em;
   transition: opacity 0.15s;
 }
 .btn-open-x:hover { opacity: 0.85; }
-
 .btn-something-else {
-  width: 100%;
-  background: var(--celery);
-  color: var(--teal-dark);
-  border: none;
-  border-radius: 14px;
-  padding: 18px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  cursor: pointer;
-  letter-spacing: 0.04em;
+  width: 100%; background: var(--celery); color: var(--teal-dark);
+  border: none; border-radius: 14px; padding: 18px;
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 800;
+  cursor: pointer; letter-spacing: 0.04em;
   transition: opacity 0.15s;
 }
 .btn-something-else:hover { opacity: 0.85; }
-
-/* Alternatives panel */
 .alternatives-panel {
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
+  display: none; flex-direction: column; gap: 10px; width: 100%;
 }
 .alternatives-panel.show { display: flex; }
-
 .alt-btn {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+  display: flex; align-items: center; gap: 14px;
   background: rgba(255,255,255,0.25);
   border: 2px solid rgba(255,255,255,0.4);
-  border-radius: 14px;
-  padding: 15px 18px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--celery);
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.15s;
-  backdrop-filter: blur(4px);
+  border-radius: 14px; padding: 15px 18px;
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 800;
+  color: var(--celery); cursor: pointer; text-decoration: none;
+  transition: background 0.15s; backdrop-filter: blur(4px);
 }
 .alt-btn:hover { background: rgba(255,255,255,0.35); }
-.alt-symbol {
-  font-size: 18px;
-  color: var(--celery);
-  width: 24px;
-  text-align: center;
-}
-
+.alt-symbol { font-size: 18px; color: var(--celery); width: 24px; text-align: center; }
 .cycle-btn {
   background: rgba(238,251,213,0.15);
   border: 2px solid rgba(238,251,213,0.3);
-  border-radius: 50%;
-  font-size: 32px;
-  color: rgba(238,251,213,0.7);
-  cursor: pointer;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  transition: all 0.15s;
-  margin-top: 16px;
+  border-radius: 50%; font-size: 32px;
+  color: rgba(238,251,213,0.7); cursor: pointer;
+  width: 56px; height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1; transition: all 0.15s; margin-top: 16px;
 }
 .cycle-btn:hover { color: var(--celery); background: rgba(238,251,213,0.25); border-color: rgba(238,251,213,0.5); }
-
-/* Thursday mode — stronger interrupt */
-.thursday-wrap {
-  background: var(--teal-dark);
-}
+.thursday-wrap { background: var(--teal-dark); }
 .thursday-wrap .interrupt-pause { color: var(--teal-light); }
 .thursday-wrap .interrupt-question { color: var(--celery); }
 .thursday-wrap .cycle-btn { color: rgba(238,251,213,0.3); background: rgba(238,251,213,0.08); border-color: rgba(238,251,213,0.15); }
 
 /* ── SCREEN 2: DIGEST ── */
-#screen-digest { background: var(--white); }
+#screen-digest { background: var(--white); position: relative; }
 
-.digest-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px 0;
+.pull-refresh {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  display: flex; align-items: center; justify-content: center;
+  height: 0; overflow: hidden;
+  color: var(--teal-mid); font-size: 11px;
+  font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+  transition: height 0.15s;
+  pointer-events: none;
 }
-.digest-session-label {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--teal-mid);
+.pull-refresh.active { height: 44px; }
+
+.caught-up-line {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  padding: 14px 20px 4px;
+  font-style: italic;
+  min-height: 28px;
 }
-.digest-refresh-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: var(--teal-mid);
-  padding: 4px 8px;
-  border-radius: 8px;
-  transition: color 0.15s;
-  line-height: 1;
-}
-.digest-refresh-btn:hover { color: var(--teal-dark); }
 
 .digest-loading {
   display: none;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 24px;
-  text-align: center;
-  gap: 16px;
+  align-items: center; justify-content: center;
+  padding: 40px 24px;
+  text-align: center; gap: 16px;
 }
 .digest-loading.show { display: flex; }
-
 .spinner {
-  width: 32px;
-  height: 32px;
+  width: 28px; height: 28px;
   border: 3px solid var(--teal-light);
   border-top-color: var(--teal-dark);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.digest-loading p { color: var(--text-mid); font-size: 14px; }
+.digest-loading p { color: var(--text-mid); font-size: 13px; }
 
 .digest-setup-msg {
-  display: none;
-  text-align: center;
-  padding: 48px 28px;
+  display: none; text-align: center; padding: 48px 28px;
 }
 .digest-setup-msg.show { display: block; }
 .digest-setup-msg p {
-  margin-bottom: 16px;
-  line-height: 1.65;
-  color: var(--text-mid);
-  font-size: 14px;
+  margin-bottom: 14px; line-height: 1.6;
+  color: var(--text-mid); font-size: 14px;
 }
 .digest-setup-msg strong { color: var(--teal-dark); }
+.digest-setup-msg .btn-primary { max-width: 220px; margin: 0 auto; }
 
-.digest-list { padding: 8px 0 0; }
-
-.digest-item {
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.1s;
-}
-.digest-item:hover { background: #f7fcfc; }
-.digest-item:last-child { border-bottom: none; }
-
-.digest-item-source {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--teal-mid);
-  margin-bottom: 5px;
-}
-.digest-item-headline {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  line-height: 1.3;
-  margin-bottom: 5px;
-}
-.digest-item-summary {
-  font-size: 13px;
-  color: var(--text-mid);
-  line-height: 1.55;
-}
-
-/* Fandom block */
-.fandom-box {
-  display: none;
-  background: var(--teal-dark);
-  margin: 10px 16px 6px;
-  border-radius: 16px;
-  padding: 16px 18px 18px;
-  color: var(--celery);
-}
-.fandom-box-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.fandom-box-label {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--teal-mid);
-}
-.fandom-box.loading .fandom-box-label::after {
-  content: ' \2022\2022\2022';
-}
-.fandom-status {
-  font-size: 12px;
-  color: var(--teal-mid);
-  margin-bottom: 4px;
-  font-style: italic;
-}
-.fandom-list { display: flex; flex-direction: column; gap: 14px; }
-.fandom-item {
-  border-left: 2px solid var(--teal-mid);
-  padding-left: 12px;
-}
-.fandom-topic {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--celery);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
-}
-.fandom-summary {
-  font-size: 13px;
-  color: var(--teal-light);
-  line-height: 1.5;
-}
-.fandom-sources { margin-top: 6px; }
-.fandom-sources a {
-  font-size: 10px;
-  color: var(--teal-mid);
-  margin-right: 8px;
-  text-decoration: underline;
-}
-
-/* Digest error box */
 .digest-error {
   display: none;
   background: #fff2f2;
@@ -497,322 +311,366 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
 }
 .digest-error.show { display: block; }
 .digest-error-title {
-  font-size: 12px;
+  font-size: 12px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #a83838; margin-bottom: 4px;
+}
+.digest-error-detail {
+  font-size: 13px; color: #6a2020; line-height: 1.4;
+}
+
+/* Collapsible sections */
+.section {
+  border-top: 1px solid var(--border);
+}
+.section:last-of-type { border-bottom: 1px solid var(--border); }
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+}
+.section-title {
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal-dark);
+}
+.section-meta {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--teal-mid); font-weight: 800;
+}
+.section-count {
+  background: var(--celery);
+  color: var(--teal-dark);
+  font-size: 11px; font-weight: 800;
+  padding: 2px 9px; border-radius: 10px;
+  min-width: 22px; text-align: center;
+}
+.section-count.zero { background: transparent; color: var(--text-mid); }
+.section-arrow {
+  transition: transform 0.2s;
+  font-size: 14px;
+  color: var(--teal-mid);
+}
+.section.open .section-arrow { transform: rotate(90deg); }
+.section-body {
+  display: none;
+  padding: 0 0 8px;
+}
+.section.open .section-body { display: block; }
+
+.source-group {
+  margin-bottom: 8px;
+}
+.source-group-header {
+  padding: 8px 20px 4px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #a83838;
-  margin-bottom: 4px;
+  color: var(--teal-mid);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.digest-error-detail {
-  font-size: 13px;
-  color: #6a2020;
-  line-height: 1.4;
+.source-group-empty {
+  padding: 4px 20px 10px;
+  font-size: 12px;
+  color: var(--text-mid);
+  font-style: italic;
 }
 
-.digest-end {
-  display: none;
-  background: var(--celery);
-  margin: 20px;
-  border-radius: 16px;
-  padding: 40px 24px;
-  text-align: center;
+.feed-card {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
-.digest-end.show { display: block; }
-.digest-end-mark {
+.feed-card:hover { background: #f7fcfc; }
+.feed-card:last-child { border-bottom: none; }
+.feed-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--teal-mid);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.feed-card-source { color: var(--teal-dark); }
+.feed-card-time { color: var(--text-mid); font-weight: 400; letter-spacing: 0; text-transform: none; }
+.feed-card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--teal-dark);
+  line-height: 1.35;
+  margin-bottom: 5px;
+}
+.feed-card-text {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.5;
+}
+.feed-card-stats {
+  display: flex;
+  gap: 14px;
+  margin-top: 7px;
+  font-size: 11px;
+  color: var(--text-mid);
+}
+.feed-card-summary-loading {
+  font-size: 12px;
+  color: var(--teal-mid);
+  font-style: italic;
+}
+
+.all-caught-up {
+  display: none;
+  text-align: center;
+  padding: 72px 24px 60px;
+}
+.all-caught-up.show { display: block; }
+.all-caught-up-mark {
   font-size: 28px;
   color: var(--teal-dark);
   margin-bottom: 14px;
   letter-spacing: 6px;
 }
-.digest-end h2 {
+.all-caught-up h2 {
   font-size: 20px;
   font-weight: 800;
   color: var(--teal-dark);
   margin-bottom: 6px;
 }
-.digest-end p {
+.all-caught-up p {
+  font-size: 13px;
+  color: var(--text-mid);
+}
+
+.mark-read-bar {
+  display: none;
+  position: sticky;
+  bottom: 0;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  padding: 12px 20px;
+  text-align: center;
+}
+.mark-read-bar.show { display: block; }
+.mark-read-btn {
+  background: var(--teal-dark);
+  color: var(--celery);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  color: var(--teal-mid);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  min-width: 240px;
 }
 
 /* ── SCREEN 3: I WANT IT ── */
 #screen-research { background: var(--white); }
-
 .research-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 16px 20px 0;
 }
-.research-count {
-  font-size: 12px;
-  color: var(--text-mid);
-}
-
+.research-count { font-size: 12px; color: var(--text-mid); }
 .research-list { padding: 12px 16px; }
-
 .research-card {
-  background: var(--white);
-  border-radius: 14px;
-  padding: 16px 18px;
-  margin-bottom: 10px;
-  border: 2px solid var(--border);
-  transition: border-color 0.15s;
+  background: var(--white); border-radius: 14px;
+  padding: 16px 18px; margin-bottom: 10px;
+  border: 2px solid var(--border); transition: border-color 0.15s;
 }
 .research-card.changed { border-color: var(--teal-dark); }
-
 .research-card-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
 }
-.research-card-name {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  flex: 1;
-}
+.research-card-name { font-size: 16px; font-weight: 800; color: var(--teal-dark); flex: 1; }
 .research-changed-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--teal-dark);
-  flex-shrink: 0;
-  margin-top: 6px;
-  display: none;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--teal-dark); flex-shrink: 0; margin-top: 6px; display: none;
 }
 .research-card.changed .research-changed-dot { display: block; }
-
-.research-card-notes {
-  font-size: 13px;
-  color: var(--text-mid);
-  margin-top: 6px;
-  line-height: 1.5;
-}
-
-.research-card-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
+.research-card-notes { font-size: 13px; color: var(--text-mid); margin-top: 6px; line-height: 1.5; }
+.research-card-meta { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
 .research-price {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  background: var(--celery);
-  padding: 3px 10px;
-  border-radius: 20px;
+  font-size: 13px; font-weight: 800;
+  color: var(--teal-dark); background: var(--celery);
+  padding: 3px 10px; border-radius: 20px;
 }
 .research-check-btn {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--teal-mid);
-  background: var(--teal-light);
-  border: none;
-  border-radius: 8px;
-  padding: 4px 12px;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 800;
+  color: var(--teal-mid); background: var(--teal-light);
+  border: none; border-radius: 8px; padding: 4px 12px;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
   transition: color 0.15s;
 }
 .research-check-btn:hover { color: var(--teal-dark); }
 .research-link-btn {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  text-decoration: none;
-  background: var(--celery);
-  border-radius: 8px;
-  padding: 4px 12px;
+  font-size: 12px; font-weight: 800;
+  color: var(--teal-dark); text-decoration: none;
+  background: var(--celery); border-radius: 8px; padding: 4px 12px;
 }
 .research-delete-btn {
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: var(--border);
-  cursor: pointer;
-  padding: 0 2px;
-  line-height: 1;
+  background: none; border: none; font-size: 18px;
+  color: var(--border); cursor: pointer; padding: 0 2px; line-height: 1;
   transition: color 0.15s;
 }
 .research-delete-btn:hover { color: var(--teal-dark); }
-
 .research-changed-note {
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--teal-dark);
-  font-weight: 800;
+  margin-top: 8px; font-size: 12px;
+  color: var(--teal-dark); font-weight: 800;
 }
-
-/* Add form */
 .add-research-form {
   display: none;
-  background: var(--teal-light);
-  border-radius: 14px;
-  padding: 18px;
-  margin: 0 16px 12px;
+  background: var(--teal-light); border-radius: 14px;
+  padding: 18px; margin: 0 16px 12px;
   border: 2px solid var(--teal-mid);
 }
 .add-research-form.show { display: block; }
 .form-row { margin-bottom: 10px; }
 .form-label {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--teal-dark);
-  margin-bottom: 6px;
-  display: block;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--teal-dark); margin-bottom: 6px; display: block;
 }
-.form-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 14px;
-}
+.form-actions { display: flex; gap: 10px; margin-top: 14px; }
 .form-actions .btn-primary { flex: 1; padding: 12px; font-size: 14px; }
 .form-actions .btn-secondary { flex: 1; padding: 12px; font-size: 14px; }
-
 .link-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
 }
 .link-row input { flex: 1; font-size: 13px; padding: 8px 10px; }
 .remove-link-btn {
-  background: none;
-  border: none;
-  color: var(--teal-mid);
-  cursor: pointer;
-  font-size: 18px;
-  padding: 0 4px;
+  background: none; border: none; color: var(--teal-mid);
+  cursor: pointer; font-size: 18px; padding: 0 4px;
   transition: color 0.15s;
 }
 .remove-link-btn:hover { color: var(--teal-dark); }
 .add-link-btn {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  padding: 4px 0;
+  font-size: 12px; font-weight: 800;
+  color: var(--teal-dark); background: none;
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; padding: 4px 0;
 }
 
 /* ── SCREEN 4: SETTINGS ── */
 #screen-settings { background: var(--teal-light); }
-
-.settings-section {
-  margin: 16px 16px 0;
-}
+.settings-section { margin: 16px 16px 0; }
 .settings-section-title {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--teal-mid);
-  margin-bottom: 8px;
-  padding: 0 2px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal-mid); margin-bottom: 8px; padding: 0 2px;
 }
 .settings-card {
-  background: var(--white);
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 16px;
+  background: var(--white); border-radius: 14px;
+  overflow: hidden; margin-bottom: 16px;
 }
 .settings-row {
-  display: flex;
-  align-items: center;
+  display: flex; align-items: center;
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
   gap: 12px;
 }
 .settings-row:last-child { border-bottom: none; }
-.settings-row-label {
-  flex: 1;
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--teal-dark);
-}
-.settings-row-sub {
-  font-size: 12px;
-  color: var(--text-mid);
-  font-weight: 400;
-  margin-top: 2px;
-}
+.settings-row-label { flex: 1; font-size: 15px; font-weight: 800; color: var(--teal-dark); }
+.settings-row-sub { font-size: 12px; color: var(--text-mid); font-weight: 400; margin-top: 2px; }
 .settings-row-action {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--teal-dark);
-  background: none;
-  border: none;
-  cursor: pointer;
+  font-size: 13px; font-weight: 800;
+  color: var(--teal-dark); background: none;
+  border: none; cursor: pointer;
   font-family: 'DM Sans', sans-serif;
 }
 
+/* Source list editor */
+.source-list {
+  padding: 6px 0;
+}
+.source-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+.source-row:last-of-type { border-bottom: none; }
+.source-name {
+  flex: 1;
+  font-size: 14px;
+  color: var(--teal-dark);
+  font-weight: 400;
+  word-break: break-all;
+}
+.source-remove {
+  background: none; border: none;
+  color: var(--teal-mid);
+  font-size: 20px; cursor: pointer;
+  padding: 0 4px; line-height: 1;
+  transition: color 0.15s;
+}
+.source-remove:hover { color: var(--teal-dark); }
+.source-add-row {
+  display: flex; gap: 8px;
+  padding: 10px 16px 14px;
+}
+.source-add-row input { flex: 1; font-size: 14px; padding: 10px 12px; }
+.source-add-btn {
+  background: var(--teal-dark); color: var(--celery);
+  border: none; border-radius: 10px;
+  padding: 10px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 800; font-size: 14px;
+  cursor: pointer;
+}
+.source-empty {
+  padding: 14px 16px;
+  font-size: 13px; color: var(--text-mid); font-style: italic;
+}
+.config-input-wrap { padding: 14px 16px; }
+.config-input-wrap input {
+  font-size: 13px; padding: 10px 12px; margin-bottom: 10px;
+}
+.config-input-wrap .btn-primary { font-size: 13px; padding: 12px; }
+
+/* Check-in questions list */
 .chip-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: flex; flex-wrap: wrap; gap: 8px;
   padding: 14px 16px 4px;
 }
 .chip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--teal-light);
-  border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 800;
+  display: flex; align-items: center; gap: 6px;
+  background: var(--teal-light); border-radius: 20px;
+  padding: 6px 12px; font-size: 13px; font-weight: 800;
   color: var(--teal-dark);
 }
 .chip-remove {
-  background: none;
-  border: none;
-  color: var(--teal-mid);
-  cursor: pointer;
-  font-size: 15px;
-  line-height: 1;
-  padding: 0;
-  display: flex;
-  align-items: center;
+  background: none; border: none;
+  color: var(--teal-mid); cursor: pointer;
+  font-size: 15px; line-height: 1;
+  padding: 0; display: flex; align-items: center;
   transition: color 0.15s;
 }
 .chip-remove:hover { color: var(--teal-dark); }
-
 .chip-add-row {
-  display: flex;
-  gap: 8px;
+  display: flex; gap: 8px;
   padding: 10px 16px 14px;
 }
 .chip-add-row input { flex: 1; font-size: 14px; padding: 10px 12px; }
 .chip-add-btn {
-  background: var(--teal-dark);
-  color: var(--celery);
-  border: none;
-  border-radius: 10px;
+  background: var(--teal-dark); color: var(--celery);
+  border: none; border-radius: 10px;
   padding: 10px 16px;
   font-family: 'DM Sans', sans-serif;
-  font-weight: 800;
-  font-size: 14px;
+  font-weight: 800; font-size: 14px;
   cursor: pointer;
 }
-
-.config-input-wrap {
-  padding: 14px 16px;
-}
-.config-input-wrap input {
-  font-size: 13px;
-  padding: 10px 12px;
-  margin-bottom: 10px;
-}
-.config-input-wrap .btn-primary { font-size: 13px; padding: 12px; }
 
 /* ── TOAST ── */
 .toast {
@@ -852,10 +710,6 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <div class="interrupt-actions" id="interruptActions">
         <button class="btn-open-x" onclick="openX()">Open X &rarr;</button>
         <button class="btn-something-else" onclick="toggleAlternatives()">something else</button>
-        <div id="sundayReflection" style="display:none;margin-top:28px;background:var(--celery);border-radius:16px;padding:20px 18px;text-align:left;width:100%;max-width:320px;">
-          <div style="font-size:10px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--teal-mid);margin-bottom:8px;">This week, before X you said:</div>
-          <div id="reflectionList"></div>
-        </div>
         <div class="alternatives-panel" id="altPanel">
           <a class="alt-btn" href="sms:" onclick="event.preventDefault(); window.location='sms:';">
             <span class="alt-symbol"><svg width="20" height="16" viewBox="0 0 20 16" fill="none"><rect x="1" y="1" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M1 3l9 5.5L19 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Text someone
@@ -875,15 +729,13 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   <!-- ══ SCREEN 2: DIGEST ══ -->
   <div id="screen-digest" class="screen">
     <div class="screen-header">
-      <div class="screen-label" id="digestSessionLabel">Digest</div>
+      <div class="screen-label">Present Tense</div>
       <div class="screen-title" style="color:var(--celery)">What the Streets Are Saying:</div>
     </div>
 
-    <div class="digest-controls">
-      <span class="digest-session-label" id="digestTimestamp"></span>
-      <button class="digest-refresh-btn" onclick="loadDigest(true)" title="Refresh">&#8635;</button>
-    </div>
-    <div id="lastCaughtUp" style="text-align:center;font-size:0.82rem;color:var(--muted);margin:-6px 0 8px 0;font-style:italic"></div>
+    <div class="pull-refresh" id="pullRefresh">pull to refresh</div>
+
+    <div class="caught-up-line" id="caughtUpLine"></div>
 
     <div class="digest-loading" id="digestLoading">
       <div class="spinner"></div>
@@ -891,36 +743,27 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     </div>
 
     <div class="digest-setup-msg" id="digestSetupMsg">
-      <p>Your digest needs a <strong>Cloudflare Worker URL</strong> and an <strong>Anthropic API key</strong> to run.</p>
-      <p>Head to Settings to add them &mdash; about 10 minutes to set up, then it runs itself.</p>
-      <button class="btn-primary" style="max-width:220px;margin:0 auto" onclick="switchScreen('settings')">Go to Settings</button>
+      <p>Your feed needs a <strong>Cloudflare Worker URL</strong> to run.</p>
+      <p>If you want Substack summaries, also add an <strong>Anthropic API key</strong>.</p>
+      <button class="btn-primary" onclick="switchScreen('settings')">Go to Settings</button>
     </div>
 
     <div class="digest-error" id="digestError">
-      <div class="digest-error-title">Digest failed</div>
+      <div class="digest-error-title">couldn&rsquo;t fetch</div>
       <div class="digest-error-detail"></div>
       <button class="btn-secondary" style="margin-top:10px;max-width:200px;margin-left:auto;margin-right:auto" onclick="loadDigest(true)">Try again</button>
     </div>
 
-    <!-- FANDOM INTERPRETATION -->
-    <div class="fandom-box" id="fandomBox">
-      <div class="fandom-box-header">
-        <div class="fandom-box-label">Fandom Read</div>
-      </div>
-      <div class="fandom-status"></div>
-      <div class="fandom-list" id="fandomList"></div>
+    <div id="digestSections"></div>
+
+    <div class="all-caught-up" id="allCaughtUp">
+      <div class="all-caught-up-mark">&#8211;&#8212;&#8211;</div>
+      <h2>you&rsquo;re caught up.</h2>
+      <p id="allCaughtUpSub"></p>
     </div>
 
-    <div class="digest-list" id="digestList"></div>
-
-    <div class="digest-end" id="digestEnd">
-      <div class="digest-end-mark">&#8211;&#8212;&#8211;</div>
-      <h2>all caught up.</h2>
-      <p>you did it. you&rsquo;re free.</p>
-      <button onclick="markDigestRead()" style="margin-top:16px;background:var(--teal-dark);color:var(--celery);border:none;border-radius:12px;width:48px;height:48px;font-size:22px;cursor:pointer;transition:opacity 0.15s;">&#10003;</button>
-    </div>
-    <div class="digest-cleared" id="digestCleared" style="display:none;text-align:center;padding:60px 24px;">
-      <p style="font-size:14px;color:var(--text-mid);" id="digestClearedMsg"></p>
+    <div class="mark-read-bar" id="markReadBar">
+      <button class="mark-read-btn" onclick="markAllRead()">mark everything read &amp; caught up</button>
     </div>
   </div>
 
@@ -978,12 +821,23 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">Interest Topics</div>
+      <div class="settings-section-title">My Sources &mdash; Reddit</div>
       <div class="settings-card">
-        <div class="chip-list" id="topicsChipList"></div>
-        <div class="chip-add-row">
-          <input type="text" id="newTopicInput" placeholder="Add a topic&hellip;" onkeydown="if(event.key==='Enter')addTopic()">
-          <button class="chip-add-btn" onclick="addTopic()">Add</button>
+        <div class="source-list" id="redditSourceList"></div>
+        <div class="source-add-row">
+          <input type="text" id="newRedditInput" placeholder="r/losangeles or full URL" onkeydown="if(event.key==='Enter')addRedditSource()">
+          <button class="source-add-btn" onclick="addRedditSource()">Add</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">My Sources &mdash; Substack</div>
+      <div class="settings-card">
+        <div class="source-list" id="substackSourceList"></div>
+        <div class="source-add-row">
+          <input type="text" id="newSubstackInput" placeholder="hunterharris.substack.com" onkeydown="if(event.key==='Enter')addSubstackSource()">
+          <button class="source-add-btn" onclick="addSubstackSource()">Add</button>
         </div>
       </div>
     </div>
@@ -1000,14 +854,6 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">X Journal</div>
-      <div class="settings-card">
-        <div id="xJournalList" style="font-size:13px;color:var(--teal-dark);padding:0 16px;"></div>
-        <div id="xJournalEmpty" style="font-size:13px;color:var(--text-mid);padding:12px 16px;">No entries yet.</div>
-      </div>
-    </div>
-
-    <div class="settings-section">
       <div class="settings-section-title">Backend</div>
       <div class="settings-card">
         <div class="config-input-wrap">
@@ -1015,8 +861,6 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
           <input type="url" id="workerUrlInput" placeholder="https://present-tense.yourname.workers.dev">
           <label class="form-label" style="margin-top:4px">Anthropic API Key</label>
           <input type="text" id="apiKeyInput" placeholder="sk-ant-&hellip;">
-          <label class="form-label" style="margin-top:10px">Apify Dataset URL <span style="font-weight:400;color:var(--text-mid)">(optional &mdash; for Twitter/X feed)</span></label>
-          <input type="url" id="apifyUrlInput" placeholder="https://api.apify.com/v2/datasets/&hellip;">
           <button class="btn-primary" style="margin-top:4px" onclick="saveConfig()">Save</button>
         </div>
       </div>
@@ -1027,23 +871,16 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <div class="settings-card">
         <div class="settings-row">
           <div>
-            <div class="settings-row-label">Present Tense v5</div>
+            <div class="settings-row-label">Present Tense v6</div>
             <div class="settings-row-sub">Built for April Korto Quioh</div>
           </div>
         </div>
         <div class="settings-row">
           <div>
-            <div class="settings-row-label">Clear cached digest</div>
-            <div class="settings-row-sub">Forces a fresh fetch next time</div>
+            <div class="settings-row-label">Clear seen-set</div>
+            <div class="settings-row-sub">Next refresh shows everything again (last 24h)</div>
           </div>
-          <button class="settings-row-action" onclick="clearDigestCache()">Clear</button>
-        </div>
-        <div class="settings-row">
-          <div>
-            <div class="settings-row-label">Reset all data</div>
-            <div class="settings-row-sub">Clears everything except your config</div>
-          </div>
-          <button class="settings-row-action" onclick="clearData()" style="color:var(--teal-mid)">Reset</button>
+          <button class="settings-row-action" onclick="clearSeenSet()">Clear</button>
         </div>
       </div>
     </div>
@@ -1070,7 +907,7 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
     </button>
     <button class="nav-btn" id="nav-digest" onclick="switchScreen('digest')">
       <span class="nav-icon">&#8801;</span>
-      Digest
+      Feed
     </button>
     <button class="nav-btn" id="nav-research" onclick="switchScreen('research')">
       <span class="nav-icon">&#9671;</span>
@@ -1088,27 +925,6 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
 
 <script>
 // ══ DEFAULTS ══
-const DEFAULT_TOPICS = [
-  "Heated Rivalry","Hudson Williams","Connor Storrie",
-  "Josh O'Connor","Harris Dickinson","Justin Kuritzkes",
-  "Timothee Chalamet","Dakota Johnson","Kristen Stewart",
-  "Hilary Duff","Demi Lovato","Lorde","Kendrick Lamar",
-  "Kaytranada","Remi Wolf","The Pitt","Wonder Man",
-  "A24","Sundance Institute","The Black List","WGA",
-  "Rian Johnson","Critics Choice Awards","Oscars","MUBI",
-  "Independent Film Financing","Zinzi Coogler",
-  "Book Publishing for Screenwriters","The Odyssey",
-  "Kate Berlant","John Early","Ziwe","Meg Stalter",
-  "Langston Kerman","Fred Armisen","Blair Socci",
-  "LA Clippers","Liberian Diaspora","West African Culture",
-  "Plus-Size Fashion","Ankara Fashion","LGBTQ+ Entertainment",
-  "AMC Theatres","Anthropic","Apple","OpenAI",
-  "Nora Ephron","Substack","LA Food Scene",
-  "LA Film Festivals","LACMA","LA Public Library"
-];
-
-const DEFAULT_SOURCES = [];
-
 const DEFAULT_QUESTIONS = [
   "you can look \u2014 but first let\u2019s check in. what do you really need right now?",
   "hey. before X \u2014 what are you actually feeling?",
@@ -1121,32 +937,39 @@ const DEFAULT_QUESTIONS = [
   "what\u2019s the thing you keep not doing today?",
   "quick check: are you okay?"
 ];
-
-const DEFAULT_FANDOM_TOPICS = ["Hudcon"];
-
 const THURSDAY_Q = "what will make you feel better right now \u2014 a few minutes on X, or a check in with a friend?";
 
 // ══ STORAGE ══
 function load(key, fallback) {
-  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  try { const v = localStorage.getItem(key); return v !== null ? JSON.parse(v) : fallback; }
   catch { return fallback; }
 }
 function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
+// Seen-set: Set of post IDs (stored as array in localStorage)
+function loadSeenSet() {
+  const arr = load('pt_seen_set', []);
+  return new Set(Array.isArray(arr) ? arr : []);
+}
+function saveSeenSet(set) {
+  // Keep seen-set bounded — trim to last 5000 entries
+  const arr = Array.from(set);
+  const trimmed = arr.length > 5000 ? arr.slice(arr.length - 5000) : arr;
+  save('pt_seen_set', trimmed);
+}
+
 let S = {
-  topics:        load('pt_topics',         DEFAULT_TOPICS),
-  fandomTopics:  load('pt_fandom_topics',  DEFAULT_FANDOM_TOPICS),
-  sources:       load('pt_sources',        DEFAULT_SOURCES),
   questions:     load('pt_questions',      DEFAULT_QUESTIONS),
   research:      load('pt_research',       []),
-  digest:        load('pt_digest',         null),
-  fandom:        load('pt_fandom',         null),
-  digestTime:    load('pt_digest_time',    0),
-  fandomTime:    load('pt_fandom_time',    0),
+  caughtUpTime:  load('pt_caught_up_time', 0),
   workerUrl:     load('pt_worker_url',     ''),
   apiKey:        load('pt_api_key',        ''),
-  apifyUrl:      load('pt_apify_url',      ''),
+  sources:       load('pt_sources_cache',  { reddit: [], substack: [] }),
+  summaryCache:  load('pt_summary_cache',  {}),
+  seen:          loadSeenSet(),
+  sectionOpen:   load('pt_section_open',   { reddit: true, substack: true }),
   qIdx:          0,
+  feed:          null
 };
 
 // ══ NAV ══
@@ -1155,33 +978,13 @@ function switchScreen(name) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
   document.getElementById('nav-' + name).classList.add('active');
-  if (name === 'digest')   renderDigest();
+  if (name === 'digest')   enterDigestScreen();
   if (name === 'research') renderResearch();
   if (name === 'settings') renderSettings();
 }
 
-// ══ INTERRUPT ══
+// ══ INTERRUPT (unchanged) ══
 function isThursday() { return new Date().getDay() === 4; }
-
-function checkSundayReflection() {
-  if (new Date().getDay() !== 0) return; // not Sunday
-  const entries = load('pt_x_feelings', []);
-  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  const thisWeek = entries.filter(e => e.time > weekAgo);
-  if (!thisWeek.length) return;
-  const reflectEl = document.getElementById('sundayReflection');
-  const listEl = document.getElementById('reflectionList');
-  listEl.innerHTML = thisWeek.map(e => {
-    const d = new Date(e.time);
-    const day = d.toLocaleDateString([], {weekday:'short'});
-    const time = d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
-    return '<div style="padding:10px 0;border-bottom:1px solid rgba(1,57,74,0.08)">' +
-      '<div style="font-size:11px;color:var(--teal-mid);font-weight:800;letter-spacing:0.1em;text-transform:uppercase">' + day + ' ' + time + '</div>' +
-      '<div style="font-size:14px;color:var(--teal-dark);margin-top:4px">' + esc(e.text) + '</div>' +
-    '</div>';
-  }).join('');
-  reflectEl.style.display = 'block';
-}
 
 function initInterrupt() {
   const badge = document.getElementById('thursdayBadge');
@@ -1195,7 +998,6 @@ function initInterrupt() {
     S.qIdx = Math.floor(Math.random() * S.questions.length);
     qEl.textContent = S.questions[S.qIdx];
   }
-  checkSundayReflection();
 }
 
 function cycleQuestion() {
@@ -1218,10 +1020,6 @@ function xGateInput() {
 function xGateSubmit() {
   const v = document.getElementById('xGateInput').value.trim();
   if (!v) return;
-  // Save the feeling entry with timestamp
-  const entries = load('pt_x_feelings', []);
-  entries.push({ text: v, time: Date.now() });
-  save('pt_x_feelings', entries);
   document.getElementById('xGateInput').value = '';
   document.getElementById('xGateGoBtn').disabled = true;
   document.getElementById('xGateOverlay').style.display = 'none';
@@ -1230,99 +1028,98 @@ function xGateSubmit() {
 function xGateCancel() {
   document.getElementById('xGateOverlay').style.display = 'none';
 }
-
 function toggleAlternatives() {
   document.getElementById('altPanel').classList.toggle('show');
 }
 
-// ══ DIGEST ══
-
-function digestIsStale() {
-  return (Date.now() - S.digestTime) > 6 * 60 * 60 * 1000;
-}
-
-// showToast defined in UTILS section below
-
-function renderDigest() {
-  document.getElementById('digestSessionLabel').textContent = 'Digest';
-  updateDigestTimestamp();
-  renderFandom(S.fandom);
-  loadDigest(false);
-}
-
-function updateDigestTimestamp() {
-  const ts = document.getElementById('digestTimestamp');
-  const lcu = document.getElementById('lastCaughtUp');
-  if (S.digestTime) {
-    const d = new Date(S.digestTime);
-    const timeStr = d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}).toLowerCase();
-    ts.textContent = '';
-    lcu.textContent = 'you last got caught up at ' + timeStr + '.';
+// ══ FEED (DIGEST) ══
+function enterDigestScreen() {
+  updateCaughtUpLine();
+  if (!S.workerUrl) {
+    showSetupMsg();
+    return;
+  }
+  if (S.feed) {
+    // We already have a feed from earlier in this session — re-render it
+    renderFeed();
   } else {
-    ts.textContent = '';
-    lcu.textContent = '';
+    // Fresh entry. DO NOT auto-fetch — the whole point is for the user
+    // to see their last-caught-up time and decide whether to pull-to-refresh.
+    // If they haven't marked anything read yet, show a neutral resting state.
+    showRestingState();
+  }
+}
+
+function showRestingState() {
+  // Clean the screen — no loading, no error, no sections, no mark-read bar.
+  // Just the top caughtUpLine + a resting "you're caught up" block.
+  document.getElementById('digestSetupMsg').classList.remove('show');
+  document.getElementById('digestError').classList.remove('show');
+  document.getElementById('digestLoading').classList.remove('show');
+  document.getElementById('digestSections').innerHTML = '';
+  document.getElementById('markReadBar').classList.remove('show');
+  const allEl = document.getElementById('allCaughtUp');
+  document.getElementById('allCaughtUpSub').textContent = S.caughtUpTime
+    ? 'pull down to check if anything new came in.'
+    : 'pull down to load your feed for the first time.';
+  allEl.classList.add('show');
+}
+
+function showSetupMsg() {
+  document.getElementById('digestSetupMsg').classList.add('show');
+  document.getElementById('digestLoading').classList.remove('show');
+  document.getElementById('digestError').classList.remove('show');
+  document.getElementById('digestSections').innerHTML = '';
+  document.getElementById('allCaughtUp').classList.remove('show');
+  document.getElementById('markReadBar').classList.remove('show');
+}
+
+function updateCaughtUpLine() {
+  // ONE timestamp, always shown when caughtUpTime exists — this is the
+  // "you were just here" anchor. The all-caught-up block below does NOT
+  // repeat the timestamp (that was the duplicate we fixed).
+  const el = document.getElementById('caughtUpLine');
+  if (S.caughtUpTime) {
+    const d = new Date(S.caughtUpTime);
+    const timeStr = d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}).toLowerCase();
+    el.textContent = 'you last got caught up at ' + timeStr + '.';
+  } else {
+    el.textContent = '';
   }
 }
 
 async function loadDigest(force) {
-  if (!S.workerUrl || !S.apiKey) {
-    document.getElementById('digestLoading').classList.remove('show');
-    document.getElementById('digestError').classList.remove('show');
-    document.getElementById('digestSetupMsg').classList.add('show');
-    document.getElementById('digestList').innerHTML = '';
-    document.getElementById('digestEnd').classList.remove('show');
-    return;
-  }
+  if (!S.workerUrl) { showSetupMsg(); return; }
+
   document.getElementById('digestSetupMsg').classList.remove('show');
   document.getElementById('digestError').classList.remove('show');
-
-  // Fire fandom in parallel with digest (Tier 2 rate limits can handle both)
-  loadFandom(force);
-
-  if (!force && S.digest && !digestIsStale()) {
-    renderDigestItems(S.digest);
-    return;
-  }
   document.getElementById('digestLoading').classList.add('show');
-  document.getElementById('digestList').innerHTML = '';
-  document.getElementById('digestEnd').classList.remove('show');
+  document.getElementById('digestSections').innerHTML = '';
+  document.getElementById('allCaughtUp').classList.remove('show');
+  document.getElementById('markReadBar').classList.remove('show');
+
   try {
     const res = await fetch(S.workerUrl + '/digest', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        api_key: S.apiKey,
-        apify_url: S.apifyUrl || undefined
-      })
+      body: JSON.stringify({})
     });
     const data = await res.json();
     if (!res.ok || data.error) {
-      // If there are items despite the error (fallback data), show them
-      if (data.items && data.items.length > 0) {
-        S.digest = data.items;
-        S.digestTime = Date.now();
-        save('pt_digest', S.digest);
-        save('pt_digest_time', S.digestTime);
-        updateDigestTimestamp();
-        renderDigestItems(S.digest);
-        if (data.note) showToast(data.note);
-
-        return;
-      }
-      showDigestError(data.error || ('HTTP ' + res.status), data.detail || data.message);
+      showDigestError(data.error || ('HTTP ' + res.status), data.detail);
       return;
     }
-    if (!Array.isArray(data.items)) {
-      showDigestError('parse_error', 'Response had no items array.');
-      return;
+    S.feed = data;
+    // Also refresh sources cache
+    if (Array.isArray(data.reddit)) {
+      S.sources.reddit = data.reddit.map(r => r.subreddit);
     }
-    S.digest = data.items;
-    S.digestTime = Date.now();
-    save('pt_digest', S.digest);
-    save('pt_digest_time', S.digestTime);
-    updateDigestTimestamp();
-    renderDigestItems(S.digest);
-    if (data.note) showToast(data.note);
+    if (Array.isArray(data.substack)) {
+      S.sources.substack = data.substack.map(s => ({ feed: s.feed, publication: s.publication }));
+    }
+    save('pt_sources_cache', S.sources);
+    document.getElementById('digestLoading').classList.remove('show');
+    renderFeed();
   } catch (e) {
     showDigestError('network', e.message || 'Could not reach the Worker.');
   }
@@ -1331,168 +1128,322 @@ async function loadDigest(force) {
 function showDigestError(code, detail) {
   document.getElementById('digestLoading').classList.remove('show');
   const box = document.getElementById('digestError');
-  const isRateLimit = detail && detail.includes('rate_limit');
   box.querySelector('.digest-error-detail').textContent =
-    isRateLimit ? 'Rate limit hit — wait 2 minutes before trying again.' :
     (code === 'network' ? 'Could not reach the Worker. Check your internet connection.' :
-     code === 'anthropic_error' ? 'Anthropic rejected the request. (' + (detail || '').slice(0, 200) + ')' :
-     code === 'parse_error' ? 'The AI response could not be parsed.' :
-     code === 'json_parse_error' ? 'The AI response was malformed.' :
-     code === 'ai_call_failed' ? 'Could not reach Anthropic API.' :
-     'Something went wrong.') + (detail && !isRateLimit && code !== 'anthropic_error' ? ' ' + detail.slice(0, 200) : '');
+     code === 'not_found' ? 'Worker endpoint not found. Is the new worker deployed?' :
+     'Something went wrong.') + (detail ? ' ' + String(detail).slice(0, 200) : '');
   box.classList.add('show');
 }
 
-function markDigestRead() {
-  const now = Date.now();
-  save('pt_digest_read_time', now);
-  S.digest = [];
-  S.digestTime = 0;
-  save('pt_digest', null);
-  save('pt_digest_time', 0);
-  document.getElementById('digestList').innerHTML = '';
-  document.getElementById('digestEnd').classList.remove('show');
+function renderFeed() {
+  const sectionsEl = document.getElementById('digestSections');
+  sectionsEl.innerHTML = '';
+  if (!S.feed) return;
 
-  // Also clear fandom read
-  S.fandom = null;
-  S.fandomTime = 0;
-  save('pt_fandom', null);
-  save('pt_fandom_time', 0);
-  document.getElementById('fandomList').innerHTML = '';
-  const fandomBox = document.getElementById('fandomBox');
-  fandomBox.classList.remove('loading');
-  fandomBox.querySelector('.fandom-status').textContent = '';
-  fandomBox.style.display = 'none';
+  // Filter against seen-set
+  const redditGroups = (S.feed.reddit || []).map(rg => ({
+    subreddit: rg.subreddit,
+    error: rg.error,
+    items: (rg.items || []).filter(it => !S.seen.has(it.id))
+  }));
+  const substackGroups = (S.feed.substack || []).map(sg => ({
+    feed: sg.feed,
+    publication: sg.publication,
+    error: sg.error,
+    items: (sg.items || []).filter(it => !S.seen.has(it.id))
+  }));
 
-  showDigestCleared(now);
-}
+  const redditNewCount = redditGroups.reduce((n, g) => n + g.items.length, 0);
+  const substackNewCount = substackGroups.reduce((n, g) => n + g.items.length, 0);
+  const totalNew = redditNewCount + substackNewCount;
 
-function showDigestCleared(time) {
-  const d = new Date(time);
-  const h = d.getHours();
-  const ampm = h >= 12 ? 'pm' : 'am';
-  const hour = h % 12 || 12;
-  const min = String(d.getMinutes()).padStart(2, '0');
-  document.getElementById('digestClearedMsg').textContent =
-    'you last got caught up at ' + hour + '.' + min + ampm + '.';
-  document.getElementById('digestCleared').style.display = 'block';
-}
+  // Reddit section
+  sectionsEl.appendChild(renderSection({
+    key: 'reddit',
+    title: 'Reddit',
+    newCount: redditNewCount,
+    isOpen: S.sectionOpen.reddit,
+    groups: redditGroups,
+    renderItem: renderRedditCard,
+    groupLabel: g => 'r/' + g.subreddit,
+    groupEmptyMsg: g => g.error
+      ? 'couldn\u2019t reach r/' + g.subreddit + ' (' + g.error + ')'
+      : 'nothing new in r/' + g.subreddit + ' since you last checked'
+  }));
 
-function renderDigestItems(items) {
-  document.getElementById('digestLoading').classList.remove('show');
-  document.getElementById('digestCleared').style.display = 'none';
-  const list = document.getElementById('digestList');
-  list.innerHTML = '';
-  const end = document.getElementById('digestEnd');
-  if (!items || items.length === 0) {
-    // Check if they already read it
-    const readTime = load('pt_digest_read_time', 0);
-    if (readTime) {
-      showDigestCleared(readTime);
-      return;
-    }
-    list.innerHTML = '<p style="text-align:center;padding:48px 24px;color:var(--text-mid);font-size:14px">Nothing notable today.</p>';
-    end.classList.add('show');
-    return;
+  // Substack section
+  sectionsEl.appendChild(renderSection({
+    key: 'substack',
+    title: 'Substack',
+    newCount: substackNewCount,
+    isOpen: S.sectionOpen.substack,
+    groups: substackGroups,
+    renderItem: renderSubstackCard,
+    groupLabel: g => g.publication || g.feed,
+    groupEmptyMsg: g => g.error
+      ? 'couldn\u2019t reach ' + (g.publication || g.feed) + ' (' + g.error + ')'
+      : 'nothing new from ' + (g.publication || g.feed) + ' since you last checked'
+  }));
+
+  // All caught up state — the single timestamp lives in the top caughtUpLine.
+  // The allCaughtUpSub never repeats it (that was the duplicate-timestamp bug).
+  const allEl = document.getElementById('allCaughtUp');
+  const markBar = document.getElementById('markReadBar');
+  if (totalNew === 0) {
+    document.getElementById('allCaughtUpSub').textContent = S.caughtUpTime
+      ? 'nothing new right now.'
+      : 'nothing new right now.';
+    allEl.classList.add('show');
+    markBar.classList.remove('show');
+  } else {
+    allEl.classList.remove('show');
+    markBar.classList.add('show');
   }
-  items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'digest-item';
-    el.innerHTML =
-      '<div class="digest-item-source">' + esc(item.source || '') + '</div>' +
-      '<div class="digest-item-headline">' + esc(item.headline || '') + '</div>' +
-      (item.summary ? '<div class="digest-item-summary">' + esc(item.summary) + '</div>' : '');
-    if (item.url) el.onclick = () => window.open(item.url, '_blank');
-    list.appendChild(el);
-  });
-  end.classList.add('show');
+  updateCaughtUpLine();
+
+  // Lazy-load Substack summaries
+  queueSummaries(substackGroups);
 }
 
-// ══ FANDOM ══
-function fandomIsStale() {
-  return (Date.now() - S.fandomTime) > 6 * 60 * 60 * 1000;
-}
+function renderSection({ key, title, newCount, isOpen, groups, renderItem, groupLabel, groupEmptyMsg }) {
+  const sec = document.createElement('div');
+  sec.className = 'section' + (isOpen ? ' open' : '');
 
-async function loadFandom(force) {
-  if (!S.workerUrl || !S.apiKey) return;
-  if (!force && S.fandom && !fandomIsStale()) { renderFandom(S.fandom); return; }
-  const box = document.getElementById('fandomBox');
-  box.classList.add('loading');
-  box.style.display = 'block';
-  box.querySelector('.fandom-status').textContent = 'reading the fandom\u2026';
-  try {
-    const res = await fetch(S.workerUrl + '/fandom', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ api_key: S.apiKey, topic: 'Hudcon', apify_url: S.apifyUrl || '' })
-    });
-    const data = await res.json();
-    box.classList.remove('loading');
-    if (res.ok && !data.error && Array.isArray(data.fandom) && data.fandom.length) {
-      S.fandom = data.fandom;
-      S.fandomTime = Date.now();
-      save('pt_fandom', S.fandom);
-      save('pt_fandom_time', S.fandomTime);
-      renderFandom(S.fandom);
+  const header = document.createElement('div');
+  header.className = 'section-header';
+  header.innerHTML =
+    '<div class="section-title">' + esc(title) + '</div>' +
+    '<div class="section-meta">' +
+      '<span class="section-count' + (newCount === 0 ? ' zero' : '') + '">' + newCount + '</span>' +
+      '<span class="section-arrow">&#x25B6;</span>' +
+    '</div>';
+  header.onclick = () => toggleSection(key);
+  sec.appendChild(header);
+
+  const body = document.createElement('div');
+  body.className = 'section-body';
+
+  groups.forEach(g => {
+    const grp = document.createElement('div');
+    grp.className = 'source-group';
+    const label = groupLabel(g);
+    const count = g.items.length;
+    const hdr = document.createElement('div');
+    hdr.className = 'source-group-header';
+    hdr.innerHTML =
+      '<span>' + esc(label) + '</span>' +
+      (count > 0 ? '<span style="color:var(--teal-dark);">' + count + '</span>' : '');
+    grp.appendChild(hdr);
+
+    if (count === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'source-group-empty';
+      empty.textContent = groupEmptyMsg(g);
+      grp.appendChild(empty);
     } else {
-      box.querySelector('.fandom-status').textContent = 'couldn\u2019t pull fandom updates right now.';
+      g.items.forEach(it => grp.appendChild(renderItem(it)));
     }
-  } catch {
-    box.classList.remove('loading');
-    box.querySelector('.fandom-status').textContent = 'couldn\u2019t pull fandom updates right now.';
-  }
+    body.appendChild(grp);
+  });
+
+  sec.appendChild(body);
+  return sec;
 }
 
-function renderFandom(fandom, partial) {
-  const box = document.getElementById('fandomBox');
-  const list = document.getElementById('fandomList');
-  if (!partial) box.classList.remove('loading');
-  if (!fandom || fandom.length === 0) {
-    if (!S.fandomTopics || !S.fandomTopics.length) {
-      box.style.display = 'none';
-      return;
-    }
-    box.style.display = 'block';
-    list.innerHTML = '';
-    if (!partial) box.querySelector('.fandom-status').textContent = 'no fandom read yet \u2014 tap refresh.';
+function toggleSection(key) {
+  S.sectionOpen[key] = !S.sectionOpen[key];
+  save('pt_section_open', S.sectionOpen);
+  renderFeed();
+}
+
+function renderRedditCard(item) {
+  const a = document.createElement('a');
+  a.className = 'feed-card';
+  a.href = item.url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  const timeStr = relativeTime(item.timestamp);
+  const textSnippet = item.text ? item.text.slice(0, 240) + (item.text.length > 240 ? '\u2026' : '') : '';
+  a.innerHTML =
+    '<div class="feed-card-meta">' +
+      '<span class="feed-card-source">' + esc(item.source) + '</span>' +
+      '<span class="feed-card-time">' + esc(timeStr) + '</span>' +
+    '</div>' +
+    '<div class="feed-card-title">' + esc(item.title) + '</div>' +
+    (textSnippet ? '<div class="feed-card-text">' + esc(textSnippet) + '</div>' : '') +
+    '<div class="feed-card-stats">' +
+      '<span>\u25B2 ' + (item.score || 0) + '</span>' +
+      '<span>\u{1F4AC} ' + (item.comments || 0) + '</span>' +
+    '</div>';
+  return a;
+}
+
+function renderSubstackCard(item) {
+  const a = document.createElement('a');
+  a.className = 'feed-card';
+  a.href = item.url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.dataset.id = item.id;
+  const timeStr = relativeTime(item.timestamp);
+  const cached = S.summaryCache[item.id];
+  const summaryHTML = cached
+    ? '<div class="feed-card-text">' + esc(cached) + '</div>'
+    : '<div class="feed-card-summary-loading" data-summary-for="' + esc(item.id) + '">summarizing\u2026</div>';
+  a.innerHTML =
+    '<div class="feed-card-meta">' +
+      '<span class="feed-card-source">' + esc(item.publication) + '</span>' +
+      '<span class="feed-card-time">' + esc(timeStr) + '</span>' +
+    '</div>' +
+    '<div class="feed-card-title">' + esc(item.title) + '</div>' +
+    summaryHTML;
+  return a;
+}
+
+function relativeTime(ts) {
+  if (!ts) return '';
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  const d = Math.floor(h / 24);
+  if (d < 7) return d + 'd ago';
+  return new Date(ts).toLocaleDateString([], {month:'short', day:'numeric'});
+}
+
+// ══ SUMMARY QUEUE ══
+let summaryQueue = [];
+let summaryRunning = false;
+
+function queueSummaries(substackGroups) {
+  const need = [];
+  substackGroups.forEach(g => {
+    g.items.forEach(it => {
+      if (!S.summaryCache[it.id]) need.push(it);
+    });
+  });
+  summaryQueue = need;
+  if (!summaryRunning) runSummaryQueue();
+}
+
+async function runSummaryQueue() {
+  if (!S.apiKey || !S.workerUrl) {
+    // No API key — use fallback excerpts
+    summaryQueue.forEach(it => fallbackSummary(it));
+    summaryQueue = [];
     return;
   }
-  box.style.display = 'block';
-  if (!partial) box.querySelector('.fandom-status').textContent = '';
-  list.innerHTML = '';
-  fandom.forEach(f => {
-    const el = document.createElement('div');
-    el.className = 'fandom-item';
-    let srcHtml = '';
-    if (Array.isArray(f.sources) && f.sources.length) {
-      srcHtml = '<div class="fandom-sources">' +
-        f.sources.slice(0, 3).map((s, i) =>
-          '<a href="' + esc(s) + '" target="_blank" onclick="event.stopPropagation()">src ' + (i + 1) + '</a>'
-        ).join(' ') + '</div>';
+  summaryRunning = true;
+  while (summaryQueue.length) {
+    const it = summaryQueue.shift();
+    try {
+      const res = await fetch(S.workerUrl + '/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          api_key: S.apiKey,
+          title: it.title,
+          excerpt: it.excerpt
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.summary) {
+        S.summaryCache[it.id] = data.summary;
+        save('pt_summary_cache', S.summaryCache);
+        applySummaryToDOM(it.id, data.summary);
+      } else {
+        fallbackSummary(it);
+      }
+    } catch {
+      fallbackSummary(it);
     }
-    el.innerHTML =
-      '<div class="fandom-topic">' + esc(cleanCitations(f.topic || '')) + '</div>' +
-      '<div class="fandom-summary">' + esc(cleanCitations(f.summary || '')) + '</div>' +
-      srcHtml;
-    list.appendChild(el);
+  }
+  summaryRunning = false;
+}
+
+function fallbackSummary(it) {
+  const fallback = (it.excerpt || '').slice(0, 150) + ((it.excerpt || '').length > 150 ? '\u2026' : '');
+  S.summaryCache[it.id] = fallback;
+  save('pt_summary_cache', S.summaryCache);
+  applySummaryToDOM(it.id, fallback);
+}
+
+function applySummaryToDOM(id, summary) {
+  const loadEl = document.querySelector('[data-summary-for="' + CSS.escape(id) + '"]');
+  if (loadEl) {
+    const replacement = document.createElement('div');
+    replacement.className = 'feed-card-text';
+    replacement.textContent = summary;
+    loadEl.replaceWith(replacement);
+  }
+}
+
+// ══ MARK AS READ ══
+function markAllRead() {
+  // Add every currently-displayed item id to seen-set
+  if (!S.feed) return;
+  (S.feed.reddit || []).forEach(g => (g.items || []).forEach(it => S.seen.add(it.id)));
+  (S.feed.substack || []).forEach(g => (g.items || []).forEach(it => S.seen.add(it.id)));
+  saveSeenSet(S.seen);
+  S.caughtUpTime = Date.now();
+  save('pt_caught_up_time', S.caughtUpTime);
+  // renderFeed() will call updateCaughtUpLine() with the correct flag for us
+  renderFeed();
+  showToast('caught up.');
+}
+
+function clearSeenSet() {
+  if (!confirm('Clear seen-set? Everything from the last 24h will appear again.')) return;
+  S.seen = new Set();
+  saveSeenSet(S.seen);
+  S.summaryCache = {};
+  save('pt_summary_cache', S.summaryCache);
+  showToast('cleared');
+  if (S.feed) renderFeed();
+}
+
+// ══ PULL TO REFRESH ══
+(function setupPullRefresh() {
+  let startY = 0, pulling = false, pullDist = 0;
+  const el = document.getElementById('screen-digest');
+  const bar = document.getElementById('pullRefresh');
+  const THRESHOLD = 70;
+
+  el.addEventListener('touchstart', (e) => {
+    if (el.scrollTop === 0) {
+      startY = e.touches[0].clientY;
+      pulling = true;
+      pullDist = 0;
+    }
+  }, { passive: true });
+
+  el.addEventListener('touchmove', (e) => {
+    if (!pulling) return;
+    pullDist = e.touches[0].clientY - startY;
+    if (pullDist > 0 && pullDist < THRESHOLD * 2) {
+      bar.classList.add('active');
+      bar.textContent = pullDist > THRESHOLD ? 'release to refresh' : 'pull to refresh';
+    }
+  }, { passive: true });
+
+  el.addEventListener('touchend', () => {
+    if (pulling && pullDist > THRESHOLD) {
+      bar.textContent = 'refreshing\u2026';
+      setTimeout(() => {
+        bar.classList.remove('active');
+        loadDigest(true);
+      }, 100);
+    } else {
+      bar.classList.remove('active');
+    }
+    pulling = false;
+    pullDist = 0;
   });
-}
+})();
 
-// Client-side safety net for any cite markup that sneaks through
-// (old cached fandom data in localStorage, or model echoing tags)
-function cleanCitations(text) {
-  if (!text) return '';
-  return String(text)
-    .replace(/<cite\b[^>]*>/gi, '')
-    .replace(/<\/cite>/gi, '')
-    .replace(/<\/?[a-z][^>]*>/gi, '')
-    .replace(/\[\^?\d+(?:[,\s-]*\d+)*\]/g, '')
-    .replace(/ {2,}/g, ' ')
-    .replace(/\s+([.,;:!?])/g, '$1')
-    .trim();
-}
-
-// ══ RESEARCH ══
+// ══ RESEARCH (I Want It) — unchanged ══
 function renderResearch() {
   const list  = document.getElementById('researchList');
   const count = document.getElementById('researchCount');
@@ -1527,7 +1478,6 @@ function renderResearch() {
     list.appendChild(card);
   });
 }
-
 function toggleAddForm() {
   const form = document.getElementById('addResearchForm');
   const isOpen = form.classList.toggle('show');
@@ -1538,19 +1488,16 @@ function toggleAddForm() {
     document.getElementById('newItemName').focus();
   }
 }
-
 function addLinkField() {
   const row = document.createElement('div');
   row.className = 'link-row';
   row.innerHTML = '<input type="url" placeholder="https://\u2026" class="link-input"><button class="remove-link-btn" onclick="removeLinkField(this)">&#215;</button>';
   document.getElementById('linkFields').appendChild(row);
 }
-
 function removeLinkField(btn) {
   const rows = document.querySelectorAll('#linkFields .link-row');
   if (rows.length > 1) btn.closest('.link-row').remove();
 }
-
 function saveResearchItem() {
   const name = document.getElementById('newItemName').value.trim();
   if (!name) { showToast('Give it a name first'); return; }
@@ -1560,7 +1507,6 @@ function saveResearchItem() {
   toggleAddForm();
   renderResearch();
 }
-
 function deleteResearch(id) {
   const item = S.research.find(r => r.id === id);
   if (!item) return;
@@ -1569,7 +1515,6 @@ function deleteResearch(id) {
   save('pt_research', S.research);
   renderResearch();
 }
-
 async function checkLinks(id) {
   const item = S.research.find(r => r.id === id);
   if (!item || !item.links || !item.links.length) return;
@@ -1582,7 +1527,6 @@ async function checkLinks(id) {
       body: JSON.stringify({ id: item.id, urls: item.links })
     });
     const data = await res.json();
-    // Re-find in case list changed during fetch
     const current = S.research.find(r => r.id === id);
     if (!current) return;
     current.changed = !!data.changed;
@@ -1593,36 +1537,116 @@ async function checkLinks(id) {
 }
 
 // ══ SETTINGS ══
-function renderSettings() {
-  renderChipList('topicsChipList',       S.topics,       'pt_topics',        1);
-  renderChipList('questionsChipList',    S.questions,    'pt_questions',     1);
+async function renderSettings() {
   document.getElementById('workerUrlInput').value = S.workerUrl;
   document.getElementById('apiKeyInput').value    = S.apiKey;
-  document.getElementById('apifyUrlInput').value  = S.apifyUrl;
-  renderXJournal();
+  renderChipList('questionsChipList', S.questions, 'pt_questions', 1);
+  // Fetch sources from worker (or show cached if offline)
+  if (S.workerUrl) {
+    try {
+      const res = await fetch(S.workerUrl + '/sources');
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.reddit)) S.sources.reddit = data.reddit;
+        if (Array.isArray(data.substack)) S.sources.substack = data.substack;
+        save('pt_sources_cache', S.sources);
+      }
+    } catch {}
+  }
+  renderSourceList('redditSourceList', S.sources.reddit || [], 'reddit');
+  renderSourceList('substackSourceList', S.sources.substack || [], 'substack');
 }
 
-function renderXJournal() {
-  const entries = load('pt_x_feelings', []);
-  const list = document.getElementById('xJournalList');
-  const empty = document.getElementById('xJournalEmpty');
-  list.innerHTML = '';
-  if (!entries.length) { empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  // Show newest first
-  entries.slice().reverse().forEach(e => {
-    const d = new Date(e.time);
-    const month = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
-    const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+function renderSourceList(containerId, list, type) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  if (!list.length) {
+    el.innerHTML = '<div class="source-empty">No sources yet. Add one below.</div>';
+    return;
+  }
+  list.forEach(item => {
+    const value = typeof item === 'string' ? item : (item.feed || item.publication || '');
+    const label = typeof item === 'string'
+      ? (type === 'reddit' ? 'r/' + item : item)
+      : (item.publication || item.feed);
     const row = document.createElement('div');
-    row.style.cssText = 'padding:10px 0;border-bottom:1px solid var(--border);';
+    row.className = 'source-row';
     row.innerHTML =
-      '<div style="font-size:11px;color:var(--text-mid);margin-bottom:4px;">' + esc(month + ' at ' + time) + '</div>' +
-      '<div style="line-height:1.45;">' + esc(e.text) + '</div>';
-    list.appendChild(row);
+      '<span class="source-name">' + esc(label) + '</span>' +
+      '<button class="source-remove" data-type="' + type + '" data-value="' + esc(value) + '">&#215;</button>';
+    row.querySelector('.source-remove').onclick = () => removeSource(type, value);
+    el.appendChild(row);
   });
 }
 
+async function addRedditSource() {
+  const input = document.getElementById('newRedditInput');
+  const v = input.value.trim();
+  if (!v) return;
+  if (!S.workerUrl) { showToast('Add Worker URL first'); return; }
+  input.value = '';
+  try {
+    const res = await fetch(S.workerUrl + '/sources', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'reddit', action: 'add', value: v })
+    });
+    const data = await res.json();
+    if (res.ok && Array.isArray(data.list)) {
+      S.sources.reddit = data.list;
+      save('pt_sources_cache', S.sources);
+      renderSourceList('redditSourceList', S.sources.reddit, 'reddit');
+      showToast('added');
+    } else {
+      showToast(data.error || 'failed');
+    }
+  } catch (e) { showToast('network error'); }
+}
+
+async function addSubstackSource() {
+  const input = document.getElementById('newSubstackInput');
+  const v = input.value.trim();
+  if (!v) return;
+  if (!S.workerUrl) { showToast('Add Worker URL first'); return; }
+  input.value = '';
+  try {
+    const res = await fetch(S.workerUrl + '/sources', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'substack', action: 'add', value: v })
+    });
+    const data = await res.json();
+    if (res.ok && Array.isArray(data.list)) {
+      S.sources.substack = data.list;
+      save('pt_sources_cache', S.sources);
+      renderSourceList('substackSourceList', S.sources.substack, 'substack');
+      showToast('added');
+    } else {
+      showToast(data.error || 'failed');
+    }
+  } catch (e) { showToast('network error'); }
+}
+
+async function removeSource(type, value) {
+  if (!S.workerUrl) { showToast('Add Worker URL first'); return; }
+  try {
+    const res = await fetch(S.workerUrl + '/sources', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, action: 'remove', value })
+    });
+    const data = await res.json();
+    if (res.ok && Array.isArray(data.list)) {
+      S.sources[type] = data.list;
+      save('pt_sources_cache', S.sources);
+      renderSourceList(type === 'reddit' ? 'redditSourceList' : 'substackSourceList', S.sources[type], type);
+    } else {
+      showToast(data.error || 'failed');
+    }
+  } catch (e) { showToast('network error'); }
+}
+
+// Check-in questions (chip list)
 function renderChipList(containerId, arr, storeKey, minLen) {
   const el = document.getElementById(containerId);
   el.innerHTML = '';
@@ -1630,61 +1654,35 @@ function renderChipList(containerId, arr, storeKey, minLen) {
     const chip = document.createElement('div');
     chip.className = 'chip';
     chip.innerHTML = '<span>' + esc(item) + '</span>' +
-      '<button class="chip-remove" onclick="removeChip(\'' + storeKey + '\',' + i + ',' + minLen + ')">&#215;</button>';
+      '<button class="chip-remove" data-idx="' + i + '">&#215;</button>';
+    chip.querySelector('.chip-remove').onclick = () => removeChip(storeKey, i, minLen);
     el.appendChild(chip);
   });
 }
-
 function removeChip(key, idx, minLen) {
-  const map = {
-    pt_topics: 'topics',
-    pt_sources: 'sources',
-    pt_questions: 'questions'
-  };
-  const prop = map[key];
-  if (!prop) return;
-  if (S[prop].length <= minLen) { showToast('Keep at least one'); return; }
-  S[prop].splice(idx, 1);
-  save(key, S[prop]);
-  renderSettings();
-}
-
-function addTopic() {
-  const v = document.getElementById('newTopicInput').value.trim();
-  if (!v) return;
-  S.topics.push(v); save('pt_topics', S.topics);
-  document.getElementById('newTopicInput').value = '';
-  renderSettings();
+  if (key !== 'pt_questions') return;
+  if (S.questions.length <= minLen) { showToast('Keep at least one'); return; }
+  S.questions.splice(idx, 1);
+  save(key, S.questions);
+  renderChipList('questionsChipList', S.questions, key, minLen);
 }
 function addQuestion() {
   const v = document.getElementById('newQuestionInput').value.trim();
   if (!v) return;
-  S.questions.push(v); save('pt_questions', S.questions);
+  S.questions.push(v);
+  save('pt_questions', S.questions);
   document.getElementById('newQuestionInput').value = '';
-  renderSettings();
+  renderChipList('questionsChipList', S.questions, 'pt_questions', 1);
 }
 
 function saveConfig() {
   S.workerUrl = document.getElementById('workerUrlInput').value.trim().replace(/\/$/, '');
   S.apiKey    = document.getElementById('apiKeyInput').value.trim();
-  S.apifyUrl  = document.getElementById('apifyUrlInput').value.trim();
   save('pt_worker_url', S.workerUrl);
   save('pt_api_key',    S.apiKey);
-  save('pt_apify_url',  S.apifyUrl);
   showToast('Saved');
-}
-
-function clearDigestCache() {
-  S.digest = null; S.digestTime = 0;
-  save('pt_digest', null); save('pt_digest_time', 0);
-  showToast('Cache cleared');
-}
-
-function clearData() {
-  if (!confirm('Reset all research items and digest cache?')) return;
-  S.research = []; S.digest = null; S.digestTime = 0;
-  save('pt_research', []); save('pt_digest', null); save('pt_digest_time', 0);
-  showToast('Reset');
+  // Refresh sources now that worker URL exists
+  renderSettings();
 }
 
 // ══ UTILS ══
@@ -1699,7 +1697,9 @@ function showToast(msg) {
 }
 
 // ══ BOOT ══
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(() => {});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').catch(() => {});
+}
 initInterrupt();
 </script>
 </body>
