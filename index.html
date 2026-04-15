@@ -487,26 +487,191 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
   background: var(--teal-dark);
   color: var(--celery);
   border: none;
-  border-radius: 12px;
-  width: 48px;
-  height: 48px;
+  border-radius: 14px;
+  width: 56px;
+  height: 56px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 0 rgba(1, 57, 74, 0.22);
-  transition: transform 0.08s ease, box-shadow 0.08s ease, opacity 0.15s ease;
+  box-shadow: 0 6px 0 rgba(1, 57, 74, 0.28), 0 10px 18px rgba(1, 57, 74, 0.18);
+  transition: transform 0.05s cubic-bezier(.2, .8, .2, 1),
+              box-shadow 0.05s cubic-bezier(.2, .8, .2, 1);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
-.mark-read-btn:hover { opacity: 0.92; }
+.mark-read-btn.pressing,
 .mark-read-btn:active {
-  transform: translateY(3px) scale(0.94);
-  box-shadow: 0 1px 0 rgba(1, 57, 74, 0.22);
+  transform: translateY(6px) scale(0.88);
+  box-shadow: 0 0 0 rgba(1, 57, 74, 0.28), 0 2px 6px rgba(1, 57, 74, 0.18);
+  transition-duration: 0.04s;
 }
 .mark-read-btn svg {
   display: block;
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
   stroke: var(--celery);
+  stroke-width: 3;
+}
+@keyframes digest-end-thud {
+  0%   { transform: scale(1);    }
+  40%  { transform: scale(0.985);}
+  100% { transform: scale(1);    }
+}
+.digest-end.thud { animation: digest-end-thud 0.18s ease-out; }
+
+/* ── CAUGHT-UP CELEBRATION BURST ── */
+.caught-up-burst {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  display: none;
+}
+.caught-up-burst.show { display: block; }
+.burst-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 48%,
+    rgba(238, 251, 213, 1.0) 0%,
+    rgba(238, 251, 213, 0.98) 25%,
+    rgba(238, 251, 213, 0.88) 50%,
+    rgba(173, 212, 217, 0.35) 80%,
+    rgba(1, 57, 74, 0.0) 100%
+  );
+  opacity: 0;
+  animation: burst-bg-in 0.22s ease-out forwards,
+             burst-bg-out 0.9s ease-in 1.9s forwards;
+}
+@keyframes burst-bg-in  { to { opacity: 1; } }
+@keyframes burst-bg-out { to { opacity: 0; } }
+
+.burst-content {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 100%;
+  padding: 0 24px;
+}
+.burst-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(64px, 20vw, 112px);
+  font-weight: 800;
+  color: var(--teal-dark);
+  letter-spacing: -0.04em;
+  line-height: 0.92;
+  margin: 0 0 14px;
+  opacity: 0;
+  animation: burst-title-in 0.55s cubic-bezier(.2, .9, .3, 1.35) 0.08s forwards,
+             burst-fade-out  0.5s ease-in 2.0s forwards;
+}
+@keyframes burst-title-in {
+  0%   { opacity: 0; transform: scale(0.55); }
+  65%  { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1);    }
+}
+@keyframes burst-fade-out {
+  to { opacity: 0; transform: translateY(-8px); }
+}
+.burst-time {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--teal-dark);
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  opacity: 0;
+  animation: burst-line-in 0.45s ease-out 0.35s forwards,
+             burst-fade-out 0.5s ease-in 2.0s forwards;
+}
+.burst-cta {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--teal-mid);
+  letter-spacing: 0.02em;
+  margin: 0;
+  opacity: 0;
+  animation: burst-line-in 0.45s ease-out 0.55s forwards,
+             burst-fade-out 0.5s ease-in 2.0s forwards;
+}
+@keyframes burst-line-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.burst-sparkles {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.sparkle {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.sparkle svg { width: 100%; height: 100%; display: block; }
+.sparkle.s-teal     { color: var(--teal-dark);  }
+.sparkle.s-mid      { color: var(--teal-mid);   }
+.sparkle.s-light    { color: var(--teal-light); }
+.sparkle.s-celery   { color: #c5e58d;           }
+.sparkle.s-pink     { color: #f3b9d4;           }
+
+/* 16 sparkles flying outward from the center-ish, varied positions + timings */
+.sparkle:nth-child(1)  { left: 20%; top: 48%; width: 18px; height: 18px;
+  animation: sparkle-fly-up 1.4s cubic-bezier(.2,.6,.3,1) 0.06s forwards; }
+.sparkle:nth-child(2)  { left: 78%; top: 46%; width: 14px; height: 14px;
+  animation: sparkle-fly-up 1.5s cubic-bezier(.2,.6,.3,1) 0.10s forwards; }
+.sparkle:nth-child(3)  { left: 14%; top: 58%; width: 12px; height: 12px;
+  animation: sparkle-fly-diag-l 1.6s cubic-bezier(.2,.6,.3,1) 0.02s forwards; }
+.sparkle:nth-child(4)  { left: 84%; top: 60%; width: 20px; height: 20px;
+  animation: sparkle-fly-diag-r 1.7s cubic-bezier(.2,.6,.3,1) 0.12s forwards; }
+.sparkle:nth-child(5)  { left: 32%; top: 30%; width: 10px; height: 10px;
+  animation: sparkle-fly-up 1.3s cubic-bezier(.2,.6,.3,1) 0.18s forwards; }
+.sparkle:nth-child(6)  { left: 66%; top: 28%; width: 16px; height: 16px;
+  animation: sparkle-fly-up 1.5s cubic-bezier(.2,.6,.3,1) 0.22s forwards; }
+.sparkle:nth-child(7)  { left: 26%; top: 68%; width: 14px; height: 14px;
+  animation: sparkle-fly-diag-l 1.6s cubic-bezier(.2,.6,.3,1) 0.08s forwards; }
+.sparkle:nth-child(8)  { left: 72%; top: 70%; width: 12px; height: 12px;
+  animation: sparkle-fly-diag-r 1.4s cubic-bezier(.2,.6,.3,1) 0.14s forwards; }
+.sparkle:nth-child(9)  { left: 44%; top: 22%; width: 14px; height: 14px;
+  animation: sparkle-fly-up 1.6s cubic-bezier(.2,.6,.3,1) 0.26s forwards; }
+.sparkle:nth-child(10) { left: 56%; top: 24%; width: 10px; height: 10px;
+  animation: sparkle-fly-up 1.3s cubic-bezier(.2,.6,.3,1) 0.30s forwards; }
+.sparkle:nth-child(11) { left: 8%;  top: 40%; width: 12px; height: 12px;
+  animation: sparkle-fly-diag-l 1.7s cubic-bezier(.2,.6,.3,1) 0.04s forwards; }
+.sparkle:nth-child(12) { left: 90%; top: 38%; width: 16px; height: 16px;
+  animation: sparkle-fly-diag-r 1.5s cubic-bezier(.2,.6,.3,1) 0.16s forwards; }
+.sparkle:nth-child(13) { left: 38%; top: 76%; width: 14px; height: 14px;
+  animation: sparkle-fly-diag-l 1.4s cubic-bezier(.2,.6,.3,1) 0.20s forwards; }
+.sparkle:nth-child(14) { left: 62%; top: 78%; width: 18px; height: 18px;
+  animation: sparkle-fly-diag-r 1.6s cubic-bezier(.2,.6,.3,1) 0.24s forwards; }
+.sparkle:nth-child(15) { left: 48%; top: 82%; width: 10px; height: 10px;
+  animation: sparkle-fly-up 1.3s cubic-bezier(.2,.6,.3,1) 0.28s forwards; }
+.sparkle:nth-child(16) { left: 52%; top: 14%; width: 14px; height: 14px;
+  animation: sparkle-fly-up 1.5s cubic-bezier(.2,.6,.3,1) 0.32s forwards; }
+
+@keyframes sparkle-fly-up {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0); }
+  25%  { opacity: 1; transform: translate(0, -30px) rotate(80deg) scale(1); }
+  100% { opacity: 0; transform: translate(0, -200px) rotate(280deg) scale(0.4); }
+}
+@keyframes sparkle-fly-diag-l {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0); }
+  25%  { opacity: 1; transform: translate(-20px, -20px) rotate(70deg) scale(1); }
+  100% { opacity: 0; transform: translate(-120px, -160px) rotate(240deg) scale(0.4); }
+}
+@keyframes sparkle-fly-diag-r {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0); }
+  25%  { opacity: 1; transform: translate(20px, -20px) rotate(-70deg) scale(1); }
+  100% { opacity: 0; transform: translate(120px, -160px) rotate(-240deg) scale(0.4); }
 }
 
 /* ── SCREEN 3: I WANT IT ── */
@@ -798,11 +963,23 @@ input:focus, textarea:focus { border-color: var(--teal-mid); }
       <div class="digest-end">
         <div class="digest-end-mark">&#8211;&#8212;&#8211;</div>
         <p>you did it. you&rsquo;re free.</p>
-        <button class="mark-read-btn" onclick="markAllRead()" aria-label="mark as read">
+        <button class="mark-read-btn" id="markReadBtn" type="button" aria-label="mark as read"
+                onpointerdown="pressMarkRead(event)">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M5 12.5L10 17.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 12.5L10 17.5L19 7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
+      </div>
+    </div>
+
+    <!-- ── CAUGHT-UP CELEBRATION BURST ── -->
+    <div class="caught-up-burst" id="caughtUpBurst" aria-hidden="true">
+      <div class="burst-bg"></div>
+      <div class="burst-sparkles" id="burstSparkles"></div>
+      <div class="burst-content">
+        <h1 class="burst-title">free.</h1>
+        <p class="burst-time" id="burstTime"></p>
+        <p class="burst-cta">go do something real.</p>
       </div>
     </div>
   </div>
@@ -1537,10 +1714,53 @@ function applySummaryToDOM(id, summary) {
 }
 
 // ══ MARK AS READ ══
-function markAllRead() {
-  // Haptic punch on press — iOS/Android PWAs will honor this where supported.
-  if (navigator.vibrate) { try { navigator.vibrate(12); } catch (_) {} }
+// Fires on pointerdown (before click) so the visual depress happens immediately
+// under the finger, then the feed-wipe is sequenced one frame later so the
+// button's press state has a chance to paint.
+function pressMarkRead(ev) {
+  const btn = document.getElementById('markReadBtn');
+  if (btn) btn.classList.add('pressing');
+  const end = document.querySelector('.mark-read-bar .digest-end');
+  if (end) { end.classList.remove('thud'); void end.offsetWidth; end.classList.add('thud'); }
+  if (navigator.vibrate) { try { navigator.vibrate(14); } catch (_) {} }
+  requestAnimationFrame(() => requestAnimationFrame(markAllRead));
+}
 
+// Build the sparkle cloud fresh each time so CSS animations replay.
+// 16 four-point stars in varied colors from the teal/celery/pink palette.
+function renderSparkles() {
+  const host = document.getElementById('burstSparkles');
+  if (!host) return;
+  const colors = ['s-teal','s-mid','s-light','s-celery','s-teal','s-celery','s-pink','s-mid',
+                  's-teal','s-light','s-celery','s-mid','s-teal','s-pink','s-light','s-celery'];
+  const star = '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">' +
+               '<path d="M8 0 L9.6 6.4 L16 8 L9.6 9.6 L8 16 L6.4 9.6 L0 8 L6.4 6.4 Z"/>' +
+               '</svg>';
+  host.innerHTML = colors.map(c => '<span class="sparkle ' + c + '">' + star + '</span>').join('');
+}
+
+function showCaughtUpBurst(time) {
+  const burst = document.getElementById('caughtUpBurst');
+  const timeEl = document.getElementById('burstTime');
+  if (!burst) return;
+  if (timeEl) {
+    const d = new Date(time);
+    const str = d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}).toLowerCase();
+    timeEl.textContent = 'caught up at ' + str + '.';
+  }
+  // Rebuild sparkles so their CSS animations start fresh from frame 0.
+  renderSparkles();
+  // Force reflow so removing + re-adding .show restarts all animations.
+  burst.classList.remove('show');
+  void burst.offsetWidth;
+  burst.classList.add('show');
+  // Total animation length is ~2.4s (last animation ends at 1.9s + 0.5s fade).
+  // Hide after 2.6s so the overlay gets out of the way.
+  clearTimeout(showCaughtUpBurst._t);
+  showCaughtUpBurst._t = setTimeout(() => burst.classList.remove('show'), 2600);
+}
+
+function markAllRead() {
   // Add every currently-displayed item id to seen-set, clear the feed,
   // and advance BOTH cursors (caughtUpTime for display, lastRefreshTime
   // so the next refresh starts from right now).
@@ -1558,13 +1778,14 @@ function markAllRead() {
   save('pt_feed', null);
   updateCaughtUpLine();
   showRestingState();
-  // Instant (not smooth) snap to top — the feed just collapsed from full to
-  // empty, so an instant scroll matches the reflow and gives that "velocity"
-  // flick feeling instead of a soft animated glide.
+  // Instant (not smooth) snap to top — content just collapsed from full to
+  // empty, so an instant scroll matches the reflow and gives the velocity flick.
   const screenEl = document.getElementById('screen-digest');
   if (screenEl) screenEl.scrollTop = 0;
   window.scrollTo(0, 0);
-  showToast('caught up.');
+  // Fire the celebratory burst. Plays over ~2.4s with sparkles + big "free."
+  // + lime wash + timestamp + "go do something real." nudge.
+  showCaughtUpBurst(now);
 }
 
 function clearSeenSet() {
