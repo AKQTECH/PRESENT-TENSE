@@ -1345,6 +1345,16 @@ function updateCaughtUpLine() {
 async function loadDigest(force) {
   if (!S.workerUrl) { showSetupMsg(); return; }
 
+  // Stamp whatever's currently in S.feed into seen-set BEFORE we fetch new
+  // content. That way the upcoming fetch's filter excludes anything she
+  // already saw on the previous load. (Render itself does NOT stamp — that's
+  // what made close/reopen eat the feed.)
+  if (S.feed) {
+    (S.feed.reddit || []).forEach(g => (g.items || []).forEach(it => S.seen.add(it.id)));
+    (S.feed.substack || []).forEach(g => (g.items || []).forEach(it => S.seen.add(it.id)));
+    saveSeenSet(S.seen);
+  }
+
   document.getElementById('digestSetupMsg').classList.remove('show');
   document.getElementById('digestError').classList.remove('show');
   document.getElementById('digestLoading').classList.add('show');
@@ -1462,13 +1472,11 @@ function renderFeed() {
     renderItem: renderSubstackCard
   }));
 
-  // Seeing something IS knowing it. Auto-stamp every rendered item into
-  // seen-set so the next refresh only shows what's actually new to her.
-  if (totalNew > 0) {
-    redditItems.forEach(it => S.seen.add(it.id));
-    substackItems.forEach(it => S.seen.add(it.id));
-    saveSeenSet(S.seen);
-  }
+  // NOTE: we do NOT add rendered items to the seen-set here. Doing so would
+  // make the feed disappear on close/reopen (second render filters everything
+  // as "already seen"). The seen-set is only advanced by explicit user actions:
+  // (a) pressing the checkmark (markAllRead), or (b) pulling to refresh
+  // (loadDigest stamps the previously-displayed feed before fetching new).
 
   // Bottom block — always "you did it. you're free." once she's caught up
   // at least once. Never appears alongside items.
